@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head"></head>
+
+<body>
+<nav th:replace="fragments/commons::header"></nav>
+
+<div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+    <h1 class="mb-4" style="padding-top: 5%">Добавете урок</h1>
+</div>
+<form th:action="@{/edit-lesson/{id}(id=${lesson.getId()})}"
+      th:method="patch"
+      th:object="${lesson}"
+      class="form-add-course"
+      style="padding-left: 30%;
+              padding-right: 30%;">
+    <div class="mb-3">
+        <input th:field="*{title}"
+               type="text" class="form-control col-12 col-sm-6" name="title" th:text="*{title}"/>
+        <small th:if="${#fields.hasErrors('title')}" th:errors="*{title}"
+               th:errorclass="error"></small>
+    </div>
+    <div class="mb-3">
+            <textarea th:field="*{description}"
+                      type="text" class="form-control" name="text" th:text="*{description}"/>
+        <small th:if="${#fields.hasErrors('description')}" th:errors="*{description}"
+               th:errorclass="error"></small>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Редактирай</button>
+
+    </div>
+</form>
+
+</body>
+</html>

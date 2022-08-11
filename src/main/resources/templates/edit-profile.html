@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head"></head>
+<body>
+<header th:replace="fragments/commons::header">
+</header>
+<section  id="book-a-table" class="book-a-table registerAndLoginBg">
+  <div class="wrapper d-flex align-items-center reservation-form-bg">
+    <form th:method="patch"
+          th:object="${user}"
+          th:action="@{/profile/{id}/edit(id=*{id})}"
+          class="form-register"
+          data-aos="fade-up"
+          data-aos-delay="100"
+          style="padding-left: 30%;
+              padding-right: 30%;">
+      <div class="row gy-4">
+        <h3 class="text-center">Редактирай акаунт</h3>
+        <div class="control-group">
+          <span class="text-primary">Потребителско име</span>
+          <input th:field="*{username}"  th:errorclass="bg-danger"
+                 type="text" class="form-control" name="username" id="username" th:placeholder="*{username}"/>
+          <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}"
+                 th:errorclass="error"></small>
+        </div>
+        <div class="control-group">
+          <span class="text-primary">Имейл</span>
+          <input  th:field="*{email}" th:errorclass="bg-danger" type="email" class="form-control" name="email" th:placeholder="*{email}" />
+          <small  th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+                  th:errorclass="error"></small>
+        </div>
+        <div class="control-group">
+          <span class="text-primary">Име</span>
+          <input th:field="*{firstName}" th:errorclass="bg-danger" type="text" class="form-control" name="firstName" th:placeholder="*{firstName}" />
+          <small th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"
+                 th:errorclass="error"></small>
+        </div>
+        <div class="control-group">
+          <span class="text-primary">Фамилия</span>
+          <input  th:field="*{lastName}" th:errorclass="bg-danger" type="text" class="form-control" name="lastName" th:placeholder="*{lastName}"/>
+          <small th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"
+                 th:errorclass="error"></small>
+        </div>
+        <div class="control-group">
+          <span class="text-primary">Години</span>
+          <input  th:field="*{age}" th:errorclass="bg-danger" type="number" class="form-control" name="age" th:placeholder="*{age}"/>
+          <small th:if="${#fields.hasErrors('age')}" th:errors="*{age}"
+                 th:errorclass="error"></small>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Промени</button>
+      </div>
+    </form>
+  </div>
+</section>
+<footer th:replace="fragments/commons::footer"></footer>
+
+</body>
+</html>>

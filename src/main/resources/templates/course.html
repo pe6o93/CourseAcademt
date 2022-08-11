@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments/commons::head"></head>
+<body>
+<header th:replace="fragments/commons::header"></header>
+
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5">
+    <div class="container py-5">
+        <h1 class="display-3 text-white mb-3 animated slideInDown" th:text="${course.title}">About Us</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <a class="display-3 text-white mb-3"
+               th:text="|Преподавател: ${author.username}|" style="font-size: 20px;"
+               th:href="@{/profile-user/{id}(id = ${author.id})}"></a>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- About Start -->
+<div th:object="${course}" class="container-fluid bg-light overflow-hidden my-5 px-lg-0">
+    <div class="container about px-lg-0">
+        <div class="row g-0 mx-lg-0">
+            <div class="col-lg-6 ps-lg-0 wow fadeIn" data-wow-delay="0.1s" style="min-height: 400px;">
+                <div class="position-relative h-100 text-center align-items-center" style="transform: translateY(10%);">
+                    <iframe width="100%" height="80%" th:src="|https://www.youtube.com/embed/*{video}|"
+                            title="YouTube video player" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                </div>
+            </div>
+            <div class="col-lg-6 about-text py-5 wow fadeIn" data-wow-delay="0.5s">
+                <div class="p-lg-5 pe-lg-0">
+                    <h2 class="mb-4" th:text="*{title}">25+ Years Experience In Solar & Renewable Energy Industry</h2>
+                    <span class="text-primary" th:text="*{created}"></span>
+                    <p></p>
+                    <p th:text="*{description}">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam
+                        amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo justo erat
+                        amet</p>
+                    <p class="text-primary" th:text="|Точки: *{points}|">Diam dolor diam ipsum</p>
+                    <form sec:authorize="isAuthenticated()" th:if="${checkCourse} == false"
+                          th:object="${course}"
+                          th:method="POST">
+                        <th:block th:if="${checkForPoints}">
+                            <button href="" class="btn btn-primary rounded-pill py-3 px-5 mt-3" type="submit">Купи
+                                курс
+                            </button>
+                        </th:block>
+                        <th:block th:unless="${checkForPoints}">
+                            <div class="alert-danger">NO MONEY</div>
+                        </th:block>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- About End -->
+
+<th:block th:if="${checkCourse}">
+    <th:block th:object="${course}" th:if="${!lessons.isEmpty()}">
+        <div class="col-lg-12 mb-4 mb-sm-5 text-center">
+            <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Номер</th>
+                    <th scope="col">Заглавие</th>
+                    <th scope="col">Дата на създаване</th>
+                    <th:block th:if="${checkForAuthor}">
+                        <th scope="col">Действие</th>
+                    </th:block>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="lesson,iter: ${lessons}">
+                    <th scope="row" th:text="${iter.index+1}">1</th>
+                    <td><a th:href="@{/lesson/{id}(id=*{id})}" th:text="${lesson.getTitle()}"></a></td>
+                    <td th:text="${lesson.getCreated()}">Mark</td>
+                    <th:block th:if="${checkForAuthor}">
+
+                                    <td>
+                                        <a th:href="@{/edit-lesson/{id}(id=${lesson.getId()})}">Редактирай</a>
+                                        /
+                                        <form th:action="@{/lesson/{id}(id=${lesson.getId()})}" th:method="delete" > <input type="submit" class="btn text-decoration-underline" value="Изтрий"/>
+                                        </form>
+                                    </td>
+
+                    </th:block>
+                </tr>
+                </tbody>
+            </table>
+            <a sec:authorize="hasRole('TEACHER')" href="/add-course" class="btn btn-lg btn-primary btn-block"
+               type="button">Добави</a>
+        </div>
+    </th:block>
+</th:block>
+
+<th:block th:if="${checkForAuthor}">
+    <form th:action="@{/add-lesson}" name="id" th:method="get">
+        <input type="hidden" th:value="${course.id}" name="courseId"/>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Добави</button>
+    </form>
+</th:block>
+</body>
+</html>

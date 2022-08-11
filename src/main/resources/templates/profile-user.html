@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments/commons::head"></head>
+<body>
+<header th:replace="fragments/commons::header"></header>
+
+<section th:object="${user}" class="bg-light">
+    <div class="text-center mx-auto mb-5" style="padding-top: 50px;">
+        <h1 class="mb-4">Моят профил</h1>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 mb-4 mb-sm-5">
+                <div class="card card-style1 border-0">
+                    <div class="card-body p-1-9 p-sm-2-3 p-md-6 p-lg-7">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6 mb-4 mb-lg-0 align-items-center">
+                                <th:block th:if="*{getGender().equals('MALE')}">
+                                    <img
+                                            src="https://mdbootstrap.com/img/Photos/new-templates/bootstrap-chat/ava3-bg.png"
+                                            class="img-fluid my-5"
+                                            style="width: 17rem;"/>
+                                </th:block>
+                                <th:block th:unless="*{getGender().equals('FEMALE')}">
+                                    <img
+                                            src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.png"
+                                            class="img-fluid my-5"
+                                            style="width: 17rem;"/>
+                                </th:block>
+                            </div>
+                            <div class="col-lg-6 px-xl-10">
+                                <div class="rounded-0 py-4 px-lg-5 d-none d-lg-block"
+                                     style="background: lightsteelblue;">
+                                    <h3 class="h2 text-white mb-lg-0" th:text="*{firstName+' '+lastName}"></h3>
+                                    <span class="text-white" th:text="${role}">Coach</span>
+                                </div>
+                                <ul class="list-unstyled mb-1-9" style="margin-top: 50px">
+                                    <li th:if="*{!email.isEmpty()}" class="mb-2 mb-xl-3 display-28"><span
+                                            class="display-26 text-secondary me-2 font-weight-600"
+                                            th:text="|Имейл: *{email}|"></span></li>
+                                    <li th:if="*{!age.equals(null)}" class="mb-2 mb-xl-3 display-28"><span
+                                            class="display-26 text-secondary me-2 font-weight-600"
+                                            th:text="|Възраст: *{age}|"></span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:if="${role}=='Преподавател'">
+    <th:block th:object="${user}" th:if="*{!courses.isEmpty()}">
+        <div class="col-lg-12 mb-4 mb-sm-5 text-center">
+            <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Номер</th>
+                    <th scope="col">Заглавие</th>
+                    <th scope="col">Точки</th>
+                    <th scope="col">Дата на създаване</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr  th:each="course,iter: *{courses}">
+                    <th scope="row" th:text="${iter.index+1}">1</th>
+                    <td><a th:href="@{/course/{id}(id=*{id})}" th:text="${course.getTitle()}"></a></td>
+                    <td th:text="${course.getPoints()}">Mark</td>
+                    <td th:text="${course.getCreated()}">Mark</td>
+                </tr>
+                </tbody>
+            </table>
+            <a sec:authorize="hasRole('TEACHER')" href="/add-course" class="btn btn-lg btn-primary btn-block" type="button">Добави</a>
+        </div>
+    </th:block>
+    </th:block>
+</section>
+
+</body>
+</html>

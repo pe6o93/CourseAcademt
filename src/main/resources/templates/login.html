@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/commons::head"></head>
+
+<body>
+<nav th:replace="fragments/commons::header"></nav>
+<div class="row g-0 mx-lg-0 about-text py-5" style="visibility: visible; animation-delay: 0.5s; animation-name: fadeIn;">
+
+  <form th:action="@{/login}"
+        th:method="post"
+        th:object="${loginDTO}"
+        class="form-signin"
+        data-aos="fade-up"
+        data-aos-delay="100"
+        style="padding-left: 30%;
+              padding-right: 30%;
+padding-top: 10%">
+    <div class="row g-1">
+      <div class="mb-3">
+    <input th:field="*{username}"
+           type="text" class="form-control col-12 col-sm-6" name="username" placeholder="Потребителско име"/>
+<!--    <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}"-->
+<!--           id="usernameHelpInline"-->
+<!--           class="rounded"></small>-->
+        <small class="invalid-feedback">
+          <span class="bg-danger">Email is not correct </span>
+        </small>
+      </div>
+      <div class="mb-3">
+    <input th:field="*{password}"
+           type="password" class="form-control col-12 col-sm-6" name="password" placeholder="Парола"/>
+    <small th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+           class="rounded"></small>
+      </div>
+      <p th:if="${bad_credentials}" class="errors alert alert-danger">
+        Невалидно потребителско име или парола.
+      </p>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Вход</button>
+    </div>
+<!--<-TODO->-->
+  </form>
+  </div>
+
+<footer></footer>
+</body>
+</html>

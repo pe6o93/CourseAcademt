@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head th:replace="fragments/commons::head"></head>
+<body>
+<header th:replace="fragments/commons::header"></header>
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+            <h1 class="mb-4">Нашите преподаватели</h1>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s" th:each="teacher :${teachersPage}">
+                <div class="team-item rounded overflow-hidden">
+                    <div class="d-flex">
+                        <img class="img-fluid w-75" src="img/team-1.jpg" alt="">
+                    </div>
+                    <div class="p-4">
+                        <h5 ><a th:text="|*{teacher.firstName} *{teacher.lastName}|" th:href="@{/profile-user/{id}(id=*{teacher.getId()})}" >Full Name</a></h5>
+                        <span>Преподавател</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<nav th:if="${ teachersPage.totalPages > 0 }" class="pagination-outer" aria-label="Page navigation example">
+    <ul class="pagination">
+        <li th:each="pageNumber : ${pageNumbers}"
+            class="page-item"><a class="page-link waves-effect"
+                                 th:href="@{/courses(size=${teachersPage.size}, page=${pageNumber})}"
+                                 th:text="${pageNumber}"
+                                 th:class="${pageNumber==teachersPage.number + 1} ? active">3</a></li>
+    </ul>
+</nav>
+</body>
+</html>

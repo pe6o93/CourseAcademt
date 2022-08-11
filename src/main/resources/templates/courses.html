@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head th:replace="fragments/commons::head"></head>
+<body>
+<header th:replace="fragments/commons::header"></header>
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+            <h6 class="text-primary">Нашите курсове</h6>
+            <h1 class="mb-4">Последните добавени курсове</h1>
+        </div>
+        <div class="row g-4">
+            <div th:each="course: ${coursePage}" th:object="${course}" class="col-md-6 col-lg-4 wow fadeInUp"
+                 data-wow-delay="0.1s">
+                <div class="service-item rounded overflow-hidden" th:href="@{/course/{id}(id=*{id})}">
+                    <img class="img-fluid" th:src="*{picture}" alt="" th:href="@{/course/{id}(id=*{id})}">
+                    <div class="position-relative p-4 pt-0">
+                        <h4 class="mb-3" style="padding-top: 10px;"><a th:href="@{/course/{id}(id=*{id})}"
+                                                                       th:text="*{title}">Solar Panels</a></h4>
+                        <p th:text="*{description}">Stet stet justo dolor sed duo. Ut clita sea sit ipsum diam lorem
+                            diam.</p>
+                        <a class="small fw-medium" th:href="@{/course/{id}(id=*{id})}">Read More<i
+                                class="fa fa-arrow-right ms-2"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<nav th:if="${ coursePage.totalPages > 0 }" class="pagination-outer" aria-label="Page navigation example">
+    <ul  class="pagination">
+        <li th:each="pageNumber : ${pageNumbers}"
+            class="page-item"><a class="page-link waves-effect"
+                                 th:href="@{/courses(size=${coursePage.size}, page=${pageNumber})}"
+                                 th:text="${pageNumber}"
+                                 th:class="${pageNumber==coursePage.number + 1} ? active">3</a></li>
+    </ul>
+</nav>
+
+<!-- Page Header Start -->
+</body>
+</html>

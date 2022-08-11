@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head th:fragment="head">
+    <meta charset="utf-8">
+    <title>Course Academy - Академия за професионално развитие</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+<!--    <meta name="_csrf" th:content="${_csrf.token}"/>-->
+<!--    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>-->
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="/img/online-learning.png" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Roboto:wght@500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<!-- ======= Header ======= -->
+    <nav th:fragment="header" class="navbar navbar-expand-lg bg-white navbar-light sticky-top p-0">
+        <a href="/" class="navbar-brand d-flex align-items-center border-end px-4 px-lg-5">
+            <h2 class="m-0 text-primary">CourseAcademy</h2>
+        </a>
+        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+                <a href="/" class="nav-item nav-link active">Начало</a>
+                <a href="/courses" class="nav-item nav-link">Курсове</a>
+                <a href="/teachers" class="nav-item nav-link">Учители</a>
+                <a sec:authorize="hasRole('TEACHER')" href="/add-course" class="nav-item nav-link">Добави курс</a>
+                <a href="project.html" class="nav-item nav-link">Project</a>
+                <div th:if="${haveAny}" sec:authorize="isAuthenticated()" class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Моите курсове</a>
+                    <div class="dropdown-menu bg-light m-0">
+                        <a th:each="course : ${myCourses}" th:href="@{/course/{id}(id=${course.getId()})}" class="dropdown-item"><span th:text="${course.getTitle()}"></span></a>
+                    </div>
+                </div>
+                <a href="contact.html" class="nav-item nav-link">Contact</a>
+                <a sec:authorize="!isAuthenticated()" href="/login" class="nav-item nav-link">Вход</a>
+                <a sec:authorize="!isAuthenticated()" href="/register" class="nav-item nav-link">Регистрация</a>
+                <a sec:authorize="isAuthenticated()" href="/logout" class="nav-item nav-link">Логаут</a>
+            </div>
+            <a sec:authorize="isAuthenticated()" href="/profile" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Профил<i class="fa fa-arrow-right ms-3"></i></a>
+        </div>
+    </nav>
+
+
+<!-- ======= Footer ======= -->
+<div th:fragment="footer" class="container-fluid bg-dark text-body footer mt-5 pt-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container">
+        <div class="copyright">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    &copy; <a href="/">CourseAcademy</a>, All Right Reserved.
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    Designed By Petar Petrov Studio
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Footer -->
+<!--</body>-->
+<!--</html>-->

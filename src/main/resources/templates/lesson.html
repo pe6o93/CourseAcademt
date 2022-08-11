@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments/commons::head"></head>
+<body>
+<header th:replace="fragments/commons::header"></header>
+
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5">
+  <div class="container py-5">
+    <h1 class="display-3 text-white mb-3 animated slideInDown" th:text="${lessonDTO.title}">About Us</h1>
+    <nav aria-label="breadcrumb animated slideInDown">
+      <a class="display-3 text-white mb-3"
+         th:text="| Курс : ${course.title}|" style="font-size: 20px;"
+         th:href="@{/course/{id}(id = ${course.id})}"></a>
+    </nav>
+  </div>
+</div>
+<!-- Page Header End -->
+
+<!-- About Start -->
+<div th:object="${lesson}" class="container-fluid bg-light overflow-hidden my-5 px-lg-0">
+  <div class="container about px-lg-0">
+<!--      <div class="col-lg-6 about-text py-5 wow fadeIn" data-wow-delay="0.5s">-->
+        <div class="p-lg-5 pe-lg-0">
+          <h2 class="mb-4" th:text="*{title}">25+ Years Experience In Solar & Renewable Energy Industry</h2>
+          <span class="text-primary" th:text="| Добавен на *{created}|"></span>
+          <p></p>
+          <p th:text="*{description}">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam
+            amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo justo erat
+            amet</p>
+        </div>
+      </div>
+<!--  </div>-->
+</div>
+<!-- About End -->
+
+</body>
+</html>
