@@ -28,7 +28,7 @@ public interface CourseService {
 
     void deleteCourse(Integer courseId);
 
-    LessonDTO addLessonToCourse(LessonDTO lessonDTO, Integer courseId);
+    void addLessonToCourse(LessonDTO lessonDTO, Integer courseId);
 
-    CourseDTO findByLessonId(Integer id);
+//    CourseDTO findByLessonId(Integer id);
 }

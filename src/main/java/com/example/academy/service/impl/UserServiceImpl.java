@@ -11,6 +11,7 @@ import com.example.academy.model.entity.UserEntity;
 import com.example.academy.model.enums.GenderEnum;
 import com.example.academy.model.enums.RolesEnum;
 import com.example.academy.repository.CourseRepository;
+import com.example.academy.repository.LessonRepository;
 import com.example.academy.repository.RolesRepository;
 import com.example.academy.repository.UserRepository;
 import com.example.academy.service.UserService;
@@ -28,6 +29,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -45,6 +47,8 @@ public class UserServiceImpl implements UserService {
     private final UserDetailServiceImpl userDetailService;
     private final PasswordEncoder passwordEncoder;
     private final CourseRepository courseRepository;
+
+    private final LessonRepository lessonRepository;
 
     @Override
     public boolean isUserNameFree(String username) {
@@ -74,6 +78,7 @@ public class UserServiceImpl implements UserService {
                 setAuthentication(authentication);
     }
 
+    @Transactional
     @Override
     public UserDTO findByUsername(String name) {
         UserEntity userEntity = this.userRepository.findUserEntityByUsername(name).orElseThrow();
@@ -96,6 +101,7 @@ public class UserServiceImpl implements UserService {
         this.userRepository.save(userEntity);
     }
 
+    @Transactional
     @Override
     public UserDTO findUserByCourseId(Integer id) {
         Integer authorId = this.courseRepository.findById(id).orElseThrow().getAuthor().getId();
@@ -157,9 +163,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<LessonDTO> findLessonsByCourse(Integer courseId) {
-        List<LessonEntity> lessons = this.courseRepository.findById(courseId).orElseThrow().getLessons();
+        List<LessonEntity> lessons = this.lessonRepository.findAllByCourseId(courseId);
         return lessons.stream().map(l -> {
             LessonDTO lessonDTO = this.modelMapper.map(l, LessonDTO.class);
+            lessonDTO.setCourse(this.modelMapper.map(l.getCourse(),CourseDTO.class));
             lessonDTO.setCreated(l.getCreated().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
             return lessonDTO;
         }).collect(Collectors.toList());
@@ -170,6 +177,7 @@ public class UserServiceImpl implements UserService {
         return this.userRepository.findUserEntityByUsername(username).orElseThrow().getId() == authorDto.getId();
     }
 
+    @Transactional
     @Override
     public void initUsers() {
         if (this.userRepository.findAll().isEmpty()) {
@@ -195,6 +203,7 @@ public class UserServiceImpl implements UserService {
                     this.rolesRepository.getRoleEntityByRole(RolesEnum.USER),
                     this.rolesRepository.getRoleEntityByRole(RolesEnum.TEACHER)));
 
+
             UserEntity admin = new UserEntity();
             admin.setFirstName("Admin");
             admin.setLastName("Adminov");
@@ -208,8 +217,6 @@ public class UserServiceImpl implements UserService {
                     this.rolesRepository.getRoleEntityByRole(RolesEnum.TEACHER),
                     this.rolesRepository.getRoleEntityByRole(RolesEnum.ADMIN)));
 
-
-            teacher.setCourses(this.courseRepository.findAll());
 
 
             this.userRepository.save(user);

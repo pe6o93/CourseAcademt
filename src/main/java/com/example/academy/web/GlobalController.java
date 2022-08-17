@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.transaction.Transactional;
 import java.security.Principal;
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class GlobalController extends ResponseEntityExceptionHandler {
 
     private final UserService userService;
 
+    @Transactional
     @ModelAttribute("myCourses")
     public List<CourseDTO> myCourses(Principal user){
         if(user!=null) {

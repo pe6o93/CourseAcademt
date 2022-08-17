@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 
@@ -24,4 +25,5 @@ public class ApplicationBeanConfiguration {
     @Bean
     public PasswordEncoder passwordEncoder() { return new Pbkdf2PasswordEncoder();
     }
+
 }

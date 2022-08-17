@@ -28,6 +28,18 @@ spring:
       hibernate:
         format_sql: true
     defer-datasource-initialization: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: courseacademysender@gmail.com
+    password: Password123#@!
+    protocol: smtp
+    tls: true
+    properties.mail.smtp:
+      auth: true
+      starttls.enable: true
+      ssl.trust: smtp.gmail.com
+
   #Cloudinary Properties
   #cloudinary:
   #api-key:

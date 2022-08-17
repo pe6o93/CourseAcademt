@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +37,7 @@ public class UserController {
         return "register";
     }
 
+    @Transactional
     @PostMapping("/register")
     public String registerConfirm(@Valid RegisterDto registerDto,
                                   BindingResult bindingResult, RedirectAttributes redirectAttributes) {
@@ -109,8 +111,9 @@ public class UserController {
         return "redirect:/profile";
     }
 
+    @Transactional
     @GetMapping("/profile-user/{id}")
-    public String profileId( @PathVariable Integer id,Model model){
+    public String profileId(@PathVariable Integer id, Model model) {
 
         UserDTO user = this.userService.findByIdAndMapToDTO(id);
         model.addAttribute("user", user);
@@ -118,12 +121,13 @@ public class UserController {
         return "profile-user";
     }
 
+    @Transactional
     @GetMapping("/teachers")
-    public String getTeachers(Model model,  @RequestParam("page") Optional<Integer> page,
-                              @RequestParam("size") Optional<Integer> size){
+    public String getTeachers(Model model, @RequestParam("page") Optional<Integer> page,
+                              @RequestParam("size") Optional<Integer> size) {
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(6);
-        Page<UserDTO> teachersPage=this.userService.findPaginatedTeachers(PageRequest.of(currentPage - 1, pageSize));
+        Page<UserDTO> teachersPage = this.userService.findPaginatedTeachers(PageRequest.of(currentPage - 1, pageSize));
         model.addAttribute("teachersPage", teachersPage);
         int totalPages = teachersPage.getTotalPages();
         if (totalPages > 0) {
@@ -136,12 +140,13 @@ public class UserController {
     }
 
     @GetMapping("/add-points")
-    public String getPointsView(){
+    public String getPointsView() {
         return "add-points";
     }
+
     @PostMapping("/points")
-    public String addPoints(@RequestParam String points,Principal principal){
-        this.userService.addMorePoints(points,principal.getName());
+    public String addPoints(@RequestParam String points, Principal principal) {
+        this.userService.addMorePoints(points, principal.getName());
         return "redirect:profile";
     }
 

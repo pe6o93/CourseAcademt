@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,6 +27,7 @@ public class ApplicationSecurityConfiguration {
 
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
+
 
 
     @Bean
@@ -78,6 +80,9 @@ public class ApplicationSecurityConfiguration {
                 userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder);
     }
+
+
+
 
 
 

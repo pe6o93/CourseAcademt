@@ -6,6 +6,9 @@
 <body>
 <nav th:replace="fragments/commons::header"></nav>
 <div class="row g-0 mx-lg-0 about-text py-5" style="visibility: visible; animation-delay: 0.5s; animation-name: fadeIn;">
+  <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+    <h1 class="mb-4">Вход</h1>
+  </div>
 
   <form th:action="@{/login}"
         th:method="post"
@@ -14,8 +17,7 @@
         data-aos="fade-up"
         data-aos-delay="100"
         style="padding-left: 30%;
-              padding-right: 30%;
-padding-top: 10%">
+              padding-right: 30%;">
     <div class="row g-1">
       <div class="mb-3">
     <input th:field="*{username}"
@@ -42,6 +44,6 @@ padding-top: 10%">
   </form>
   </div>
 
-<footer></footer>
+<div th:replace="fragments/commons::footer"></div>
 </body>
 </html>

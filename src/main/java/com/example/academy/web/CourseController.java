@@ -66,6 +66,7 @@ public class CourseController {
         }
         return "courses";
     }
+    @Transactional
     @GetMapping("/course/{id}")
     public String course(@PathVariable Integer id, Model model, Principal user) {
         if (!this.courseService.checkIfCourseExist(id)) {
@@ -87,6 +88,7 @@ public class CourseController {
         return "course";
     }
 
+    @Transactional
     @PostMapping("/course/{id}")
     public String buyCourse(@PathVariable Integer id, Principal user) {
         UserDTO userDTO = this.userService.findByUsername(user.getName());
@@ -97,7 +99,7 @@ public class CourseController {
         return "redirect:/course/"+courseDTO.getId();
     }
 
-    @PreAuthorize("isOwner(#id)")
+    @PreAuthorize("@securityService.hasCourse(#id)")
     @GetMapping("/edit-course/{id}")
     public String getEditCourse(@PathVariable Integer id, Model model){
         CourseDTO course=this.courseService.findById(id);
@@ -105,7 +107,7 @@ public class CourseController {
         return "edit-course";
     }
 
-    @PreAuthorize("isOwner(#id)")
+    @PreAuthorize("@securityService.hasCourse(#id)")
     @PatchMapping("/edit-course/{id}")
     public String editCourse(@PathVariable Integer id, @Valid CourseDTO course, BindingResult bindingResult,
                              RedirectAttributes redirectAttributes,
@@ -120,7 +122,7 @@ public class CourseController {
         return "redirect:/course/"+id;
     }
     @Transactional
-    @PreAuthorize("isOwner(#id)")
+    @PreAuthorize("@securityService.hasCourse(#id)")
     @DeleteMapping("/course/{id}")
     public String deleteCourse(@PathVariable Integer id){
         this.courseService.deleteCourse(id);

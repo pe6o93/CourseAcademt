@@ -43,17 +43,15 @@
                 <a href="/courses" class="nav-item nav-link">Курсове</a>
                 <a href="/teachers" class="nav-item nav-link">Учители</a>
                 <a sec:authorize="hasRole('TEACHER')" href="/add-course" class="nav-item nav-link">Добави курс</a>
-                <a href="project.html" class="nav-item nav-link">Project</a>
                 <div th:if="${haveAny}" sec:authorize="isAuthenticated()" class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Моите курсове</a>
                     <div class="dropdown-menu bg-light m-0">
                         <a th:each="course : ${myCourses}" th:href="@{/course/{id}(id=${course.getId()})}" class="dropdown-item"><span th:text="${course.getTitle()}"></span></a>
                     </div>
                 </div>
-                <a href="contact.html" class="nav-item nav-link">Contact</a>
                 <a sec:authorize="!isAuthenticated()" href="/login" class="nav-item nav-link">Вход</a>
                 <a sec:authorize="!isAuthenticated()" href="/register" class="nav-item nav-link">Регистрация</a>
-                <a sec:authorize="isAuthenticated()" href="/logout" class="nav-item nav-link">Логаут</a>
+                <a sec:authorize="isAuthenticated()" href="/logout" class="nav-item nav-link">Изход</a>
             </div>
             <a sec:authorize="isAuthenticated()" href="/profile" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Профил<i class="fa fa-arrow-right ms-3"></i></a>
         </div>

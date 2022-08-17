@@ -9,6 +9,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.cglib.core.Local;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
 @Table(name = "courses")
 public class CourseEntity extends BaseEntity{
 
+    @Size(max = 60)
     private String title;
     private String picture;
     @Column(columnDefinition = "TEXT")
@@ -29,9 +31,9 @@ public class CourseEntity extends BaseEntity{
     @ManyToOne(targetEntity = UserEntity.class)
     private UserEntity author;
 
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
-    private List<LessonEntity> lessons;
+   // @LazyCollection(LazyCollectionOption.FALSE)
+//    @OneToMany(fetch = FetchType.LAZY)
+//    private List<LessonEntity> lessons;
 
     @PrePersist
     public void create() {

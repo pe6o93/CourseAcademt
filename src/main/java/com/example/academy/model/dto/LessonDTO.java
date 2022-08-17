@@ -1,5 +1,6 @@
 package com.example.academy.model.dto;
 
+import com.example.academy.model.entity.CourseEntity;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -15,8 +16,8 @@ public class LessonDTO {
     @NotNull(message = "Заглавието не може да бъде празно.")
     @Length(min = 5, message = "Заглавието трябва да бъде с повече от 5 символа.")
     private String title;
-    @Column(columnDefinition = "TEXT")
     private String description;
     private String created;
+    private CourseDTO course;
 
 }

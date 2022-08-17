@@ -67,7 +67,7 @@
                 <tbody>
                 <tr  th:each="course,iter: *{courses}">
                     <th scope="row" th:text="${iter.index+1}">1</th>
-                    <td><a th:href="@{/course/{id}(id=*{id})}" th:text="${course.getTitle()}"></a></td>
+                    <td><a th:href="@{/course/{id}(id=${course.getId()})}" th:text="${course.getTitle()}"></a></td>
                     <td th:text="${course.getPoints()}">Mark</td>
                     <td th:text="${course.getCreated()}">Mark</td>
                 </tr>
@@ -78,6 +78,7 @@
     </th:block>
     </th:block>
 </section>
+<div th:replace="fragments/commons::footer"></div>
 
 </body>
 </html>

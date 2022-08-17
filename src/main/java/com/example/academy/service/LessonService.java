@@ -8,4 +8,6 @@ public interface LessonService {
     void deleteById(Integer id);
 
     void updateLesson(LessonDTO lessonDTO);
+
+    void initLessons();
 }

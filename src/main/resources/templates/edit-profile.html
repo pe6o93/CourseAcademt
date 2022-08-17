@@ -3,8 +3,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/commons::head"></head>
 <body>
-<header th:replace="fragments/commons::header">
-</header>
+<header th:replace="fragments/commons::header"></header>
 <section  id="book-a-table" class="book-a-table registerAndLoginBg">
   <div class="wrapper d-flex align-items-center reservation-form-bg">
     <form th:method="patch"
@@ -54,6 +53,5 @@
   </div>
 </section>
 <footer th:replace="fragments/commons::footer"></footer>
-
 </body>
 </html>>

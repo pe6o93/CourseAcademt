@@ -3,10 +3,7 @@ package com.example.academy.model.entity;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.PrePersist;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -23,6 +20,8 @@ public class LessonEntity extends BaseEntity {
     private String description;
     private LocalDateTime created;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private CourseEntity course;
     @PrePersist
     public void create() {
         this.created = LocalDateTime.now();

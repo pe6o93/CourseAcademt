@@ -75,7 +75,7 @@
                 <tbody>
                 <tr th:each="lesson,iter: ${lessons}">
                     <th scope="row" th:text="${iter.index+1}">1</th>
-                    <td><a th:href="@{/lesson/{id}(id=*{id})}" th:text="${lesson.getTitle()}"></a></td>
+                    <td><a th:href="@{/lesson/{id}(id=${lesson.getId()})}" th:text="${lesson.getTitle()}"></a></td>
                     <td th:text="${lesson.getCreated()}">Mark</td>
                     <th:block th:if="${checkForAuthor}">
 
@@ -102,5 +102,7 @@
         <button class="btn btn-lg btn-primary btn-block" type="submit">Добави</button>
     </form>
 </th:block>
+<div th:replace="fragments/commons::footer"></div>
+
 </body>
 </html>
