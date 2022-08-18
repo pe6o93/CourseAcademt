@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -16,12 +17,11 @@ public interface UserService {
 
     boolean isEmailFree(String email);
 
-    void registerAndLoginUser(RegisterDto registerDto);
+    void registerAndLoginUser(RegisterDto registerDto) throws IOException;
 
     UserDTO findByUsername(String name);
     UserEntity findEntityByUsername(String name);
 
-    void initUsers();
 
     String getBiggestRole(UserDTO userDTO);
 
@@ -44,4 +44,6 @@ public interface UserService {
     List<LessonDTO> findLessonsByCourse(Integer courseId);
 
     Boolean checkIfUserIsAuthor(UserDTO authorDto, String username);
+
+    void initUsers();
 }

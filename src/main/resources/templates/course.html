@@ -40,9 +40,9 @@
                         amet</p>
                     <p class="text-primary" th:text="|Точки: *{points}|">Diam dolor diam ipsum</p>
                     <form sec:authorize="isAuthenticated()" th:if="${checkCourse} == false"
-                          th:manifest="${checkForAuthor}"
                           th:object="${course}"
                           th:method="POST">
+                        <th:block th:if="${!checkForAuthor}">
                         <th:block th:if="${checkForPoints}">
                             <button href="" class="btn btn-primary rounded-pill py-3 px-5 mt-3" type="submit">Купи
                                 курс
@@ -50,6 +50,7 @@
                         </th:block>
                         <th:block th:unless="${checkForPoints}">
                             <div class="alert-danger">NO MONEY</div>
+                        </th:block>
                         </th:block>
                     </form>
                 </div>
@@ -98,14 +99,14 @@
         </div>
     </th:block>
 </th:block>
-
+<div class="text-center">
 <th:block th:if="${checkForAuthor}">
     <form th:action="@{/add-lesson}" name="id" th:method="get">
         <input type="hidden" th:value="${course.id}" name="courseId"/>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Добави</button>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Добави урок </button>
     </form>
 </th:block>
 <div th:replace="fragments/commons::footer"></div>
-
+</div>
 </body>
 </html>

@@ -23,11 +23,8 @@ public class HomeController {
     @Transactional
     @GetMapping("/")
     public String home(Model model){
-       List<CourseDTO> lastCourses= this.courseService.getLastCoursesToDTO();
-       model.addAttribute("lastCourses",lastCourses);
+       model.addAttribute("lastCourses",this.courseService.getLastCoursesToDTO());
        model.addAttribute("lastTeachers",this.userService.getLastTeachersToDTO());
        return "index";
     }
-
-
 }

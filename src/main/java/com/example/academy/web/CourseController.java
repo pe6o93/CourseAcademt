@@ -1,5 +1,6 @@
 package com.example.academy.web;
 
+import com.example.academy.model.dto.AddCourseDTO;
 import com.example.academy.model.dto.CourseDTO;
 import com.example.academy.model.dto.UserDTO;
 import com.example.academy.service.CourseService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -37,9 +39,9 @@ public class CourseController {
 
     @Transactional
     @PostMapping("/add-course")
-    public String addCourse(@Valid CourseDTO courseDTO,
+    public String addCourse(@Valid AddCourseDTO courseDTO,
                           BindingResult bindingResult,
-                          RedirectAttributes redirectAttributes, Principal user) {
+                          RedirectAttributes redirectAttributes, Principal user) throws IOException {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("courseDTO", courseDTO);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseDTO", bindingResult);
@@ -130,5 +132,10 @@ public class CourseController {
     @ModelAttribute
     public CourseDTO courseDTO() {
         return new CourseDTO();
+    }
+
+    @ModelAttribute
+    public AddCourseDTO addCourseDTO() {
+        return new AddCourseDTO();
     }
 }

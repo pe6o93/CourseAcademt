@@ -21,7 +21,6 @@ public class CourseEntity extends BaseEntity{
 
     @Size(max = 60)
     private String title;
-    private String picture;
     @Column(columnDefinition = "TEXT")
     private String description;
     private String video;
@@ -30,6 +29,9 @@ public class CourseEntity extends BaseEntity{
 
     @ManyToOne(targetEntity = UserEntity.class)
     private UserEntity author;
+
+    @ManyToOne
+    private PictureEntity picture;
 
    // @LazyCollection(LazyCollectionOption.FALSE)
 //    @OneToMany(fetch = FetchType.LAZY)

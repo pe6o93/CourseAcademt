@@ -14,6 +14,7 @@
     <form th:action="@{/register}"
           th:method="post"
           th:object="${registerDto}"
+          enctype="multipart/form-data"
           class="form-register"
           data-aos="fade-up"
           data-aos-delay="100"
@@ -76,6 +77,21 @@
           </select>
           <small th:if="${#fields.hasErrors('role')}" th:errorclass="error" th:errors="*{role}"
                 ></small>
+        </div>
+        <div class="mb-3">
+          <label for="image" class="col-form-label  font-weight-bold">Изберете снимка</label>
+          <input th:field="*{picture}"
+                 th:errorclass="is-invalid"
+                 id="image"
+                 name="image"
+                 type="file"
+                 class="form-control-file rounded"
+                 aria-describedby="imageError"/>
+          <small th:if="${#fields.hasErrors('picture')}" th:errors="*{picture}"
+                 id="imageError"
+                 class="invalid-feedback errors alert alert-danger">
+            Image is required.
+          </small>
         </div>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Регистрация</button>
       </div>

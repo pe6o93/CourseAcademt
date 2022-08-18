@@ -23,7 +23,6 @@ public class GlobalController extends ResponseEntityExceptionHandler {
     @ModelAttribute("myCourses")
     public List<CourseDTO> myCourses(Principal user){
         if(user!=null) {
-            UserDTO byUsername = this.userService.findByUsername(user.getName());
             return this.userService.findByUsername(user.getName()).getCourses();
         }
         return null;

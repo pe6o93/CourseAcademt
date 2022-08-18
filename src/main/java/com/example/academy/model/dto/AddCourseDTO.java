@@ -1,20 +1,19 @@
 package com.example.academy.model.dto;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Column;
-import javax.persistence.Lob;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Data
-public class CourseDTO {
+public class AddCourseDTO {
 
     private Integer id;
     @Size(min=5,message = "Заглавието трябва да бъде повече от 5 символа.")
     private String title;
-    private String imageURL;
+    private MultipartFile picture;
     private String description;
     private String video;
     @NotNull(message = "Цената трябва да бъде положително число.")

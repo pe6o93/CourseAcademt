@@ -1,11 +1,13 @@
 package com.example.academy.service;
 
+import com.example.academy.model.dto.AddCourseDTO;
 import com.example.academy.model.dto.CourseDTO;
 import com.example.academy.model.dto.LessonDTO;
 import com.example.academy.model.entity.CourseEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface CourseService {
@@ -14,7 +16,7 @@ public interface CourseService {
 
     void initCourses();
 
-    CourseDTO addCourse(CourseDTO courseDTO, String username);
+    CourseDTO addCourse(AddCourseDTO addCourseDTO, String username) throws IOException;
 
     boolean checkIfCourseExist(Integer id);
 

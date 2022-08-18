@@ -31,14 +31,15 @@ public class UserEntity extends BaseEntity {
     private String password;
     @Column(length = 50)
     private String email;
-    private String picture;
-
     private Byte age;
 
     private BigDecimal points=BigDecimal.ZERO;
 
     @Enumerated(EnumType.ORDINAL)
     private GenderEnum gender;
+
+    @ManyToOne
+    private PictureEntity picture;
 
 
   // @LazyCollection(LazyCollectionOption.FALSE)

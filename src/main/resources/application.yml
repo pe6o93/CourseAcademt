@@ -6,8 +6,8 @@ spring:
     password: Password123#@!
   servlet:
     multipart:
-      max-file-size: 1MB
-      max-request-size: 5MB
+      max-file-size: 10MB
+      max-request-size: 10MB
   mvc:
     hiddenmethod:
       filter:
@@ -40,11 +40,10 @@ spring:
       starttls.enable: true
       ssl.trust: smtp.gmail.com
 
-  #Cloudinary Properties
-  #cloudinary:
-  #api-key:
-  #api-secret:
-  #cloud-name:
+cloudinary:
+  api-key: 778155975387517
+  api-secret: ${CLOUDINARY_API_SECRET}
+  cloud-name: dcw3srdlg
 
 #openapi: 3.0.0
 #info:

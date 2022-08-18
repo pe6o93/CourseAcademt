@@ -5,6 +5,7 @@ import com.example.academy.model.enums.RolesEnum;
 import com.example.academy.model.validator.UniqueEmail;
 import com.example.academy.model.validator.UniqueUserName;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import javax.validation.constraints.*;
@@ -39,6 +40,8 @@ public class RegisterDto {
 
     @Size(min = 4,max = 20,message = "Паролата трябва да бъде повече от 3 символа.")
     private String confirmPassword;
+
+    private MultipartFile picture;
 
     private RolesEnum role;
 

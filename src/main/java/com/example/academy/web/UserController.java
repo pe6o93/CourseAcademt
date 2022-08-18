@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +41,7 @@ public class UserController {
     @Transactional
     @PostMapping("/register")
     public String registerConfirm(@Valid RegisterDto registerDto,
-                                  BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+                                  BindingResult bindingResult, RedirectAttributes redirectAttributes) throws IOException {
 
         if (bindingResult.hasErrors() || !registerDto.getPassword()
                 .equals(registerDto.getConfirmPassword())) {
@@ -80,7 +81,7 @@ public class UserController {
     public String profile(Model model, Principal principal) {
         if (principal!=null) {
             UserDTO userDTO = this.userService.findByUsername(principal.getName());
-            model.addAttribute("user", this.userService.findByUsername(principal.getName()));
+            model.addAttribute("user", userDTO);
             model.addAttribute("role", this.userService.getBiggestRole(userDTO));
         }
 
@@ -88,8 +89,7 @@ public class UserController {
     }
 
     @GetMapping("/profile/{id}/edit")
-    public String editOffer(@PathVariable Integer id, Model model,
-                            Principal principal) {
+    public String editOffer(@PathVariable Integer id, Model model) {
         UserDTO byIdAndMapToDTO = this.userService.findByIdAndMapToDTO(id);
         model.addAttribute("user", byIdAndMapToDTO);
         return "edit-profile";
@@ -111,7 +111,6 @@ public class UserController {
             return "redirect:/profile/" + id + "/edit";
         }
         this.userService.update(userDTO);
-
         return "redirect:/profile";
     }
 

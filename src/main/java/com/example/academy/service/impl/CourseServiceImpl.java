@@ -1,14 +1,18 @@
 package com.example.academy.service.impl;
 
+import com.example.academy.model.dto.AddCourseDTO;
 import com.example.academy.model.dto.CourseDTO;
 import com.example.academy.model.dto.LessonDTO;
 import com.example.academy.model.entity.CourseEntity;
 import com.example.academy.model.entity.LessonEntity;
+import com.example.academy.model.entity.PictureEntity;
 import com.example.academy.model.entity.UserEntity;
 import com.example.academy.repository.CourseRepository;
 import com.example.academy.repository.LessonRepository;
+import com.example.academy.repository.PictureRepository;
 import com.example.academy.repository.UserRepository;
 import com.example.academy.service.CourseService;
+import com.example.academy.service.PictureService;
 import com.example.academy.service.UserService;
 import com.example.academy.web.exeption.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
@@ -19,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -37,15 +42,23 @@ public class CourseServiceImpl implements CourseService {
     private final ModelMapper modelMapper;
     private final UserService userService;
     private final LessonRepository lessonRepository;
+    private final PictureService pictureService;
+    private final PictureRepository pictureRepository;
 
     @Override
     public List<CourseDTO> mapCoursesToDTO(List<CourseEntity> courses) {
-        return courses.stream().map(courseEntity -> this.modelMapper.map(courseEntity, CourseDTO.class)).collect(Collectors.toList());
+        return courses.stream().map(courseEntity -> {
+            CourseDTO map = this.modelMapper.map(courseEntity, CourseDTO.class);
+            map.setImageURL(courseEntity.getPicture().getUrl());
+            return map;
+        }).collect(Collectors.toList());
     }
 
     @Override
-    public CourseDTO addCourse(CourseDTO courseDTO, String username) {
-        CourseEntity course = this.modelMapper.map(courseDTO, CourseEntity.class);
+    public CourseDTO addCourse(AddCourseDTO addCourseDTO, String username) throws IOException {
+        CourseEntity course = this.modelMapper.map(addCourseDTO, CourseEntity.class);
+        PictureEntity pictureEntity = this.pictureService.savePictureFromMultipartFile(addCourseDTO.getPicture());
+        course.setPicture(pictureEntity);
         UserEntity user = this.userService.findEntityByUsername(username);
         course.setAuthor(user);
         if (course.getVideo() != null) {
@@ -56,8 +69,14 @@ public class CourseServiceImpl implements CourseService {
         user.setCourses(courses);
         this.userRepository.save(user);
         this.courseRepository.save(course);
-        courseDTO.setId(course.getId());
-        return courseDTO;
+        addCourseDTO.setId(course.getId());
+        return mapAddCourseToCourseDTO(addCourseDTO, pictureEntity.getUrl());
+    }
+
+    private CourseDTO mapAddCourseToCourseDTO(AddCourseDTO addCourseDTO, String url) {
+        CourseDTO map = this.modelMapper.map(addCourseDTO, CourseDTO.class);
+        map.setImageURL(url);
+        return map;
     }
 
     @Override
@@ -77,9 +96,9 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<CourseDTO> getLastCoursesToDTO() {
         List<CourseEntity> createdLast3 = this.courseRepository.getCoursesOrderedByCreatedLast3();
-        createdLast3.forEach(c->{
+        createdLast3.forEach(c -> {
             if (c.getDescription().length() > 50) {
-                c.setDescription(c.getDescription().substring(0, 50)+"...");
+                c.setDescription(c.getDescription().substring(0, 50) + "...");
             }
         });
         return mapCoursesToDTO(createdLast3);
@@ -87,10 +106,11 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Page<CourseDTO> findPaginated(PageRequest pageable) {
-        List<CourseDTO> dtos= this.courseRepository.findAll().stream().map(courseEntity -> {
+        List<CourseDTO> dtos = this.courseRepository.findAll().stream().map(courseEntity -> {
             CourseDTO c = this.modelMapper.map(courseEntity, CourseDTO.class);
+            c.setImageURL(courseEntity.getPicture().getUrl());
             if (c.getDescription().length() > 80) {
-                c.setDescription(c.getDescription().substring(0, 80)+"...");
+                c.setDescription(c.getDescription().substring(0, 80) + "...");
             }
             return c;
         }).collect(Collectors.toList());
@@ -115,8 +135,10 @@ public class CourseServiceImpl implements CourseService {
         course.setTitle(courseDTO.getTitle());
         if (!Objects.equals(course.getVideo(), courseDTO.getVideo())) {
             course.setVideo(videoURLConvertForIframe(course.getVideo()));
-        }        course.setPoints(courseDTO.getPoints());
-        course.setPicture(courseDTO.getPicture());
+        }
+        course.setPoints(courseDTO.getPoints());
+        //TODO
+        //  course.setPicture(courseDTO.getPicture());
         course.setDescription(courseDTO.getDescription());
         this.courseRepository.save(course);
     }
@@ -140,8 +162,6 @@ public class CourseServiceImpl implements CourseService {
         lessonDTO.setId(lesson.getId());
     }
 
-
-
     @Transactional
     @Override
     public void initCourses() {
@@ -150,7 +170,8 @@ public class CourseServiceImpl implements CourseService {
                 "Etiam lobortis lacinia varius. Proin maximus suscipit tortor, in gravida nisi. Aenean molestie, velit nec efficitur auctor, urna erat pretium ante, nec egestas eros odio vitae augue. Nulla condimentum a augue id viverra. Suspendisse interdum urna odio, at ornare magna pharetra ac. Sed non lobortis augue. Nunc quis velit vel mauris malesuada porta vestibulum porttitor leo. Praesent faucibus metus ut arcu lobortis, ac condimentum orci rutrum. Maecenas ac eros nec sapien efficitur porttitor. Fusce ac semper turpis. Duis ac justo lectus. Sed convallis eros eget augue molestie consequat. Vestibulum ac risus at risus dapibus vehicula in tempor nisi. Donec bibendum, neque a molestie hendrerit, sapien neque venenatis velit, et dictum metus tortor in odio. Nullam blandit auctor justo sit amet ultrices.";
         if (this.courseRepository.findAll().isEmpty()) {
 
-            String videoUrl="GZvSYJDk-us";
+            PictureEntity pictureEntity = this.pictureRepository.findAll().get(0);
+            String videoUrl = "GZvSYJDk-us";
             UserEntity teacher = this.userService.findEntityByUsername("potrebitelka");
             CourseEntity course1 = new CourseEntity();
             course1.setTitle("Course 1");
@@ -196,7 +217,8 @@ public class CourseServiceImpl implements CourseService {
             course6.setAuthor(teacher);
 
             List<CourseEntity> courses = List.of(course1, course2, course3, course4, course5, course6);
-           this.courseRepository.saveAll(courses);
+            courses.forEach(courseEntity -> courseEntity.setPicture(pictureEntity));
+            this.courseRepository.saveAll(courses);
             teacher.setCourses(courses);
         }
     }

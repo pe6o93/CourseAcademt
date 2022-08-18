@@ -45,7 +45,7 @@
             <div th:each="course: ${lastCourses}" class="col-md-6 col-lg-4">
                 <div th:object="${course}" class="service-item rounded overflow-hidden"
                      th:href="@{/course/{id}(id=*{id})}">
-                    <img class="img-fluid" th:src="*{picture}" alt="" th:href="@{/course/{id}(id=*{id})}">
+                    <img class="img-fluid" th:src="@{*{imageURL}}" alt="" th:href="@{/course/{id}(id=*{id})}">
                     <div class="position-relative p-4 pt-0">
                         <h4 class="mb-3" style="padding-top: 10px;"><a th:href="@{/course/{id}(id=*{id})}"
                                                                        th:text="*{title}">Solar Panels</a></h4>
@@ -99,6 +99,7 @@
                             <div class="col-12">
                                 <button class="btn btn-primary rounded-pill py-3 px-5" type="submit">Изпрати</button>
                             </div>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -119,7 +120,7 @@
             <div th:each="teacher :${lastTeachers}" class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                 <div class="team-item rounded overflow-hidden">
                     <div class="d-flex">
-                        <img class="img-fluid w-75" src="img/team-1.jpg" alt="">
+                        <img class="img-fluid w-75" th:src="@{*{teacher.imageURL}}" alt="">
                     </div>
                     <div class="p-4">
                         <h5><a th:text="|*{teacher.firstName} *{teacher.lastName}|"

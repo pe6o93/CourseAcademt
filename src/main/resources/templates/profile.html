@@ -16,17 +16,23 @@
                     <div class="card-body p-1-9 p-sm-2-3 p-md-6 p-lg-7">
                         <div class="row align-items-center">
                             <div class="col-lg-6 mb-4 mb-lg-0 align-items-center">
-                                <th:block th:if="*{getGender().equals('MALE')}">
-                                    <img
-                                            src="https://mdbootstrap.com/img/Photos/new-templates/bootstrap-chat/ava3-bg.png"
-                                            class="img-fluid my-5"
-                                            style="width: 17rem;"/>
-                                </th:block>
-                                <th:block th:unless="*{getGender().equals('FEMALE')}">
-                                    <img
-                                            src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.png"
-                                            class="img-fluid my-5"
-                                            style="width: 17rem;"/>
+                                <img th:src="@{*{imageURL}}"
+                                        class="img-fluid my-5"
+                                        style="width: 17rem;"/>
+                                <th:block th:if="*{imageURL.isEmpty()}">
+                                    <th:block th:if="*{getGender().equals('MALE')}">
+
+                                        <img
+                                                src="https://mdbootstrap.com/img/Photos/new-templates/bootstrap-chat/ava3-bg.png"
+                                                class="img-fluid my-5"
+                                                style="width: 17rem;"/>
+                                    </th:block>
+                                    <th:block th:unless="*{getGender().equals('FEMALE')}">
+                                        <img
+                                                src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.png"
+                                                class="img-fluid my-5"
+                                                style="width: 17rem;"/>
+                                    </th:block>
                                 </th:block>
                             </div>
                             <div class="col-lg-6 px-xl-10">
@@ -49,7 +55,8 @@
                                 <a th:href="@{/add-points}" class="btn btn-lg btn-primary btn-block" type="button">
                                     Добави точки
                                 </a>
-                                <a th:href="@{/profile/{id}/edit(id=*{id})}" class="btn btn-lg btn-primary btn-block" type="button">
+                                <a th:href="@{/profile/{id}/edit(id=*{id})}" class="btn btn-lg btn-primary btn-block"
+                                   type="button">
                                     Редактирай профила
                                 </a>
                             </div>
@@ -72,21 +79,23 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr  th:each="course,iter: ${user.getCourses()}">
+                    <tr th:each="course,iter: ${user.getCourses()}">
                         <th scope="row" th:text="${iter.index+1}">1</th>
                         <td><a th:href="@{/course/{id}(id=${course.getId()})}" th:text="${course.getTitle()}"></a></td>
                         <td th:text="${course.getPoints()}">Mark</td>
                         <td th:text="${course.getCreated()}">Mark</td>
-                        <td  sec:authorize="hasRole('TEACHER')">
+                        <td sec:authorize="hasRole('TEACHER')">
                             <a th:href="@{/edit-course/{id}(id=${course.getId()})}">Редактирай</a>
                             /
-                            <form th:action="@{/course/{id}(id=${course.getId()})}" th:method="delete" > <input type="submit" class="btn  bg-danger" value="Изтрий"/>
+                            <form th:action="@{/course/{id}(id=${course.getId()})}" th:method="delete"><input
+                                    type="submit" class="btn  bg-danger" value="Изтрий"/>
                             </form>
                         </td>
                     </tr>
                     </tbody>
                 </table>
-                <a sec:authorize="hasRole('TEACHER')" href="/add-course" class="btn btn-lg btn-primary btn-block" type="button">Добави</a>
+                <a sec:authorize="hasRole('TEACHER')" href="/add-course" class="btn btn-lg btn-primary btn-block"
+                   type="button">Добави</a>
             </div>
         </th:block>
     </div>

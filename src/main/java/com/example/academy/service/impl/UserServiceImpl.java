@@ -4,16 +4,11 @@ import com.example.academy.model.dto.CourseDTO;
 import com.example.academy.model.dto.LessonDTO;
 import com.example.academy.model.dto.RegisterDto;
 import com.example.academy.model.dto.UserDTO;
-import com.example.academy.model.entity.CourseEntity;
-import com.example.academy.model.entity.LessonEntity;
-import com.example.academy.model.entity.RoleEntity;
-import com.example.academy.model.entity.UserEntity;
+import com.example.academy.model.entity.*;
 import com.example.academy.model.enums.GenderEnum;
 import com.example.academy.model.enums.RolesEnum;
-import com.example.academy.repository.CourseRepository;
-import com.example.academy.repository.LessonRepository;
-import com.example.academy.repository.RolesRepository;
-import com.example.academy.repository.UserRepository;
+import com.example.academy.repository.*;
+import com.example.academy.service.PictureService;
 import com.example.academy.service.UserService;
 import com.example.academy.web.exeption.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +25,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -47,8 +44,9 @@ public class UserServiceImpl implements UserService {
     private final UserDetailServiceImpl userDetailService;
     private final PasswordEncoder passwordEncoder;
     private final CourseRepository courseRepository;
-
     private final LessonRepository lessonRepository;
+    private final PictureService pictureService;
+    private final PictureRepository pictureRepository;
 
     @Override
     public boolean isUserNameFree(String username) {
@@ -61,11 +59,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void registerAndLoginUser(RegisterDto registerDto) {
+    public void registerAndLoginUser(RegisterDto registerDto) throws IOException {
 
+        PictureEntity pictureEntity = this.pictureService.savePictureFromMultipartFile(registerDto.getPicture());
         UserEntity user = this.modelMapper.map(registerDto, UserEntity.class);
         user.setRoles(List.of(this.rolesRepository.getRoleEntityByRole(registerDto.getRole())));
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+        user.setPicture(pictureEntity);
         this.userRepository.save(user);
         UserDetails principal = userDetailService.loadUserByUsername(user.getUsername());
         Authentication authentication = new UsernamePasswordAuthenticationToken(
@@ -113,7 +113,11 @@ public class UserServiceImpl implements UserService {
         List<UserEntity> teachers = this.userRepository.findLast3Teachers(Pageable.ofSize(3));
         return teachers.stream()
                 .filter(t -> t.getRoles().stream().noneMatch(r -> r.getRole() == RolesEnum.ADMIN))
-                .map(t -> this.modelMapper.map(t, UserDTO.class)).toList();
+                .map(t -> {
+                    UserDTO map = this.modelMapper.map(t, UserDTO.class);
+                    map.setImageURL(t.getPicture().getUrl());
+                    return map;
+                }).toList();
     }
 
     @Override
@@ -165,7 +169,7 @@ public class UserServiceImpl implements UserService {
         List<LessonEntity> lessons = this.lessonRepository.findAllByCourseId(courseId);
         return lessons.stream().map(l -> {
             LessonDTO lessonDTO = this.modelMapper.map(l, LessonDTO.class);
-            lessonDTO.setCourse(this.modelMapper.map(l.getCourse(),CourseDTO.class));
+            lessonDTO.setCourse(this.modelMapper.map(l.getCourse(), CourseDTO.class));
             lessonDTO.setCreated(l.getCreated().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
             return lessonDTO;
         }).collect(Collectors.toList());
@@ -180,6 +184,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void initUsers() {
         if (this.userRepository.findAll().isEmpty()) {
+            PictureEntity pictureEntity = this.pictureRepository.findAll().get(0);
             UserEntity user = new UserEntity();
             user.setFirstName("Petar");
             user.setLastName("Petrov");
@@ -189,6 +194,7 @@ public class UserServiceImpl implements UserService {
             user.setEmail("petar@abv.bg");
             user.setGender(GenderEnum.MALE);
             user.setRoles(List.of(this.rolesRepository.getRoleEntityByRole(RolesEnum.USER)));
+            user.setPicture(pictureEntity);
 
             UserEntity teacher = new UserEntity();
             teacher.setFirstName("Maria");
@@ -201,6 +207,7 @@ public class UserServiceImpl implements UserService {
             teacher.setRoles(List.of(
                     this.rolesRepository.getRoleEntityByRole(RolesEnum.USER),
                     this.rolesRepository.getRoleEntityByRole(RolesEnum.TEACHER)));
+            teacher.setPicture(pictureEntity);
 
 
             UserEntity admin = new UserEntity();
@@ -215,12 +222,11 @@ public class UserServiceImpl implements UserService {
                     this.rolesRepository.getRoleEntityByRole(RolesEnum.USER),
                     this.rolesRepository.getRoleEntityByRole(RolesEnum.TEACHER),
                     this.rolesRepository.getRoleEntityByRole(RolesEnum.ADMIN)));
-
+            admin.setPicture(pictureEntity);
             this.userRepository.save(user);
             this.userRepository.save(teacher);
             this.userRepository.save(admin);
         }
-
     }
 
     @Override
@@ -240,7 +246,6 @@ public class UserServiceImpl implements UserService {
         return userToUserDTO(userEntity);
     }
 
-
     private List<CourseDTO> mapCoursesToDTO(UserEntity userEntity) {
         List<CourseEntity> courses = userEntity.getCourses();
         return courses.stream().map(c -> {
@@ -258,6 +263,7 @@ public class UserServiceImpl implements UserService {
     private UserDTO userToUserDTO(UserEntity userEntity) {
         UserDTO userDTO = this.modelMapper.map(userEntity, UserDTO.class);
         userDTO.setCourses(mapCoursesToDTO(userEntity));
+        userDTO.setImageURL(userEntity.getPicture().getUrl());
         return userDTO;
     }
 }

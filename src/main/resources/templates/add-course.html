@@ -12,58 +12,66 @@
 <form th:action="@{/add-course}"
       th:method="post"
       th:object="${courseDTO}"
+      enctype="multipart/form-data"
       class="form-add-course"
       style="padding-left: 30%;
               padding-right: 30%;">
     <div class="mb-3">
-            <input th:field="*{title}"
-                   type="text" class="form-control col-12 col-sm-6" name="title" placeholder="Заглавие"/>
-            <!--    <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}"-->
-            <!--           id="usernameHelpInline"-->
-            <!--           class="rounded"></small>-->
-            <small th:if="${#fields.hasErrors('title')}" th:errors="*{title}"
-                   th:errorclass="error"></small>
-            </div>
-        <div class="mb-3">
-            <input th:field="*{picture}"
-                   type="text" class="form-control col-12 col-sm-6" name="title" placeholder="Линк към снимка"/>
-            <!--    <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}"-->
-            <!--           id="usernameHelpInline"-->
-            <!--           class="rounded"></small>-->
-            <small th:if="${#fields.hasErrors('picture')}" th:errors="*{picture}"
-                   th:errorclass="error"></small>
-        </div>
-        <div class="mb-3">
+        <input th:field="*{title}"
+               type="text" class="form-control col-12 col-sm-6" name="title" placeholder="Заглавие"/>
+        <!--    <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}"-->
+        <!--           id="usernameHelpInline"-->
+        <!--           class="rounded"></small>-->
+        <small th:if="${#fields.hasErrors('title')}" th:errors="*{title}"
+               th:errorclass="error"></small>
+    </div>
+    <div class="mb-3">
+        <input th:field="*{picture}"
+               type="text" class="form-control col-12 col-sm-6" name="title" placeholder="Линк към снимка"/>
+        <!--    <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}"-->
+        <!--           id="usernameHelpInline"-->
+        <!--           class="rounded"></small>-->
+        <small th:if="${#fields.hasErrors('picture')}" th:errors="*{picture}"
+               th:errorclass="error"></small>
+    </div>
+    <div class="mb-3">
             <textarea th:field="*{description}"
-                   type="text" class="form-control" name="text" placeholder="Описание"/>
+                      type="text" class="form-control" name="text" placeholder="Описание"/>
 
-            <!--    <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}"-->
-            <!--           id="usernameHelpInline"-->
-            <!--           class="rounded"></small>-->
-            <small th:if="${#fields.hasErrors('description')}" th:errors="*{description}"
-                   th:errorclass="error"></small>
-        </div>
-        <div class="mb-3">
-            <input th:field="*{video}"
-                   type="text" class="form-control col-12 col-sm-6" name="text" placeholder="Видео"/>
+        <!--    <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}"-->
+        <!--           id="usernameHelpInline"-->
+        <!--           class="rounded"></small>-->
+        <small th:if="${#fields.hasErrors('description')}" th:errors="*{description}"
+               th:errorclass="error"></small>
+    </div>
+    <div class="mb-3">
+        <input th:field="*{video}"
+               type="text" class="form-control col-12 col-sm-6" name="text" placeholder="Видео"/>
 
-            <!--    <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}"-->
-            <!--           id="usernameHelpInline"-->
-            <!--           class="rounded"></small>-->
-            <small th:if="${#fields.hasErrors('video')}" th:errors="*{video}"
-                   th:errorclass="error"></small>
-        </div>
-        <div class="mb-3">
-            <input th:field="*{points}"
-                   type="number" class="form-control col-12 col-sm-6" name="text" placeholder="Цена"/>
+        <!--    <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}"-->
+        <!--           id="usernameHelpInline"-->
+        <!--           class="rounded"></small>-->
+        <small th:if="${#fields.hasErrors('video')}" th:errors="*{video}"
+               th:errorclass="error"></small>
+    </div>
+    <div class="mb-3">
+        <input th:field="*{points}"
+               type="number" class="form-control col-12 col-sm-6" name="text" placeholder="Цена"/>
 
-            <!--    <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}"-->
-            <!--           id="usernameHelpInline"-->
-            <!--           class="rounded"></small>-->
-            <small th:if="${#fields.hasErrors('points')}" th:errors="*{points}"
-                   th:errorclass="error"></small>
-        </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Добави</button>
+        <!--    <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}"-->
+        <!--           id="usernameHelpInline"-->
+        <!--           class="rounded"></small>-->
+        <small th:if="${#fields.hasErrors('points')}" th:errors="*{points}"
+               th:errorclass="error"></small>
+    </div>
+    <div class="mb-3">
+        <input th:field="*{imageURL}" th:errorclass="bg-danger" name="imageUrl"
+               id="imageUrl" type="url" class="form-control"
+               placeholder="Постави адрес на снимка"/>
+        <small th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageURL}"
+               class="  rounded"></small>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Добави</button>
 
     </div>
 
