@@ -51,7 +51,6 @@ public class LessonController {
         return "profile";
     }
 
-
     @Transactional
     @PreAuthorize("@securityService.hasLesson(#id)")
     @GetMapping("/edit-lesson/{id}")

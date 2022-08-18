@@ -44,12 +44,17 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public CourseDTO addCourse(CourseDTO courseDTO, String name) {
+    public CourseDTO addCourse(CourseDTO courseDTO, String username) {
         CourseEntity course = this.modelMapper.map(courseDTO, CourseEntity.class);
-        course.setAuthor(this.userService.findEntityByUsername(name));
+        UserEntity user = this.userService.findEntityByUsername(username);
+        course.setAuthor(user);
         if (course.getVideo() != null) {
             course.setVideo(videoURLConvertForIframe(course.getVideo()));
         }
+        List<CourseEntity> courses = user.getCourses();
+        courses.add(course);
+        user.setCourses(courses);
+        this.userRepository.save(user);
         this.courseRepository.save(course);
         courseDTO.setId(course.getId());
         return courseDTO;
@@ -76,7 +81,6 @@ public class CourseServiceImpl implements CourseService {
             if (c.getDescription().length() > 50) {
                 c.setDescription(c.getDescription().substring(0, 50)+"...");
             }
-            return;
         });
         return mapCoursesToDTO(createdLast3);
     }
@@ -133,17 +137,10 @@ public class CourseServiceImpl implements CourseService {
         this.lessonRepository.save(lesson);
         List<LessonEntity> lessons = this.lessonRepository.findAllByCourseId(courseId);
         lessons.add(lesson);
-//        lesson.setCourse(course);
-//        course.setLessons(lessons);
         lessonDTO.setId(lesson.getId());
     }
 
-//    @Override
-//    public CourseDTO findByLessonId(Integer id) {
-////        LessonEntity lesson = this.lessonRepository.findById(id).orElseThrow();
-////        CourseEntity course = this.courseRepository.findAll().stream().filter(c -> c.getLessons().contains(lesson)).findAny().orElseThrow();
-////        return this.modelMapper.map(course,CourseDTO.class);
-//    }
+
 
     @Transactional
     @Override
@@ -153,10 +150,11 @@ public class CourseServiceImpl implements CourseService {
                 "Etiam lobortis lacinia varius. Proin maximus suscipit tortor, in gravida nisi. Aenean molestie, velit nec efficitur auctor, urna erat pretium ante, nec egestas eros odio vitae augue. Nulla condimentum a augue id viverra. Suspendisse interdum urna odio, at ornare magna pharetra ac. Sed non lobortis augue. Nunc quis velit vel mauris malesuada porta vestibulum porttitor leo. Praesent faucibus metus ut arcu lobortis, ac condimentum orci rutrum. Maecenas ac eros nec sapien efficitur porttitor. Fusce ac semper turpis. Duis ac justo lectus. Sed convallis eros eget augue molestie consequat. Vestibulum ac risus at risus dapibus vehicula in tempor nisi. Donec bibendum, neque a molestie hendrerit, sapien neque venenatis velit, et dictum metus tortor in odio. Nullam blandit auctor justo sit amet ultrices.";
         if (this.courseRepository.findAll().isEmpty()) {
 
-            UserEntity teacher = this.userService.findEntityByUsername("desimira");
+            String videoUrl="GZvSYJDk-us";
+            UserEntity teacher = this.userService.findEntityByUsername("potrebitelka");
             CourseEntity course1 = new CourseEntity();
             course1.setTitle("Course 1");
-            course1.setVideo("https://www.youtube.com/watch?v=her_7pa0vrg&t=1823s");
+            course1.setVideo(videoUrl);
             course1.setPoints(new BigDecimal(100));
             course1.setDescription(loremText);
 //            course1.setLessons(this.lessonRepository.findAll());
@@ -164,35 +162,35 @@ public class CourseServiceImpl implements CourseService {
 
             CourseEntity course2 = new CourseEntity();
             course2.setTitle("Course 2");
-            course2.setVideo("https://www.youtube.com/watch?v=her_7pa0vrg&t=1823s");
+            course2.setVideo(videoUrl);
             course2.setPoints(new BigDecimal(200));
             course2.setDescription(loremText);
             course2.setAuthor(teacher);
 
             CourseEntity course3 = new CourseEntity();
             course3.setTitle("Course 3");
-            course3.setVideo("https://www.youtube.com/watch?v=her_7pa0vrg&t=1823s");
+            course3.setVideo(videoUrl);
             course3.setPoints(new BigDecimal(300));
             course3.setDescription(loremText);
             course3.setAuthor(teacher);
 
             CourseEntity course4 = new CourseEntity();
             course4.setTitle("Course 4");
-            course4.setVideo("https://www.youtube.com/watch?v=her_7pa0vrg&t=1823s");
+            course4.setVideo(videoUrl);
             course4.setPoints(new BigDecimal(400));
             course4.setDescription(loremText);
             course4.setAuthor(teacher);
 
             CourseEntity course5 = new CourseEntity();
             course5.setTitle("Course 5");
-            course5.setVideo("https://www.youtube.com/watch?v=her_7pa0vrg&t=1823s");
+            course5.setVideo(videoUrl);
             course5.setPoints(new BigDecimal(500));
             course5.setDescription(loremText);
             course5.setAuthor(teacher);
 
             CourseEntity course6 = new CourseEntity();
             course6.setTitle("Course 6");
-            course6.setVideo("https://www.youtube.com/watch?v=her_7pa0vrg&t=1823s");
+            course6.setVideo(videoUrl);
             course6.setPoints(new BigDecimal(600));
             course6.setDescription(loremText);
             course6.setAuthor(teacher);
@@ -200,7 +198,6 @@ public class CourseServiceImpl implements CourseService {
             List<CourseEntity> courses = List.of(course1, course2, course3, course4, course5, course6);
            this.courseRepository.saveAll(courses);
             teacher.setCourses(courses);
-           // this.userRepository.save(teacher);
         }
     }
 

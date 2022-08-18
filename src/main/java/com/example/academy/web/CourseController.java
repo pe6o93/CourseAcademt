@@ -6,7 +6,6 @@ import com.example.academy.service.CourseService;
 import com.example.academy.service.UserService;
 import com.example.academy.web.exeption.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.security.Principal;
@@ -37,8 +35,9 @@ public class CourseController {
         return "add-course";
     }
 
+    @Transactional
     @PostMapping("/add-course")
-    public String addBook(@Valid CourseDTO courseDTO,
+    public String addCourse(@Valid CourseDTO courseDTO,
                           BindingResult bindingResult,
                           RedirectAttributes redirectAttributes, Principal user) {
         if (bindingResult.hasErrors()) {
@@ -46,8 +45,8 @@ public class CourseController {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseDTO", bindingResult);
             return "redirect:add-course";
         }
-        CourseDTO courseDTOWithId = this.courseService.addCourse(courseDTO, user.getName());
-        return "redirect:/course/" + courseDTOWithId.getId();
+        CourseDTO course = this.courseService.addCourse(courseDTO, user.getName());
+        return "redirect:/course/" + course.getId();
     }
 
     @GetMapping("/courses")
@@ -110,8 +109,7 @@ public class CourseController {
     @PreAuthorize("@securityService.hasCourse(#id)")
     @PatchMapping("/edit-course/{id}")
     public String editCourse(@PathVariable Integer id, @Valid CourseDTO course, BindingResult bindingResult,
-                             RedirectAttributes redirectAttributes,
-                             Model model){
+                             RedirectAttributes redirectAttributes){
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("courseDTO", course);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseDTO", bindingResult);
@@ -133,5 +131,4 @@ public class CourseController {
     public CourseDTO courseDTO() {
         return new CourseDTO();
     }
-
 }

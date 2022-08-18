@@ -2,6 +2,7 @@ package com.example.academy.web;
 
 import com.example.academy.model.dto.CourseDTO;
 import com.example.academy.model.dto.UserDTO;
+import com.example.academy.service.CourseService;
 import com.example.academy.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -22,11 +23,13 @@ public class GlobalController extends ResponseEntityExceptionHandler {
     @ModelAttribute("myCourses")
     public List<CourseDTO> myCourses(Principal user){
         if(user!=null) {
-           return this.userService.findByUsername(user.getName()).getCourses();
+            UserDTO byUsername = this.userService.findByUsername(user.getName());
+            return this.userService.findByUsername(user.getName()).getCourses();
         }
         return null;
     }
 
+    @Transactional
     @ModelAttribute("haveAny")
     public Boolean haveCourse(Principal user){
         if(user!=null) {
@@ -34,5 +37,4 @@ public class GlobalController extends ResponseEntityExceptionHandler {
         }
         return false;
     }
-
 }

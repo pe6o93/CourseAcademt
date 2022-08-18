@@ -31,6 +31,7 @@ public class UserEntity extends BaseEntity {
     private String password;
     @Column(length = 50)
     private String email;
+    private String picture;
 
     private Byte age;
 

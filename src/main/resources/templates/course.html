@@ -40,6 +40,7 @@
                         amet</p>
                     <p class="text-primary" th:text="|Точки: *{points}|">Diam dolor diam ipsum</p>
                     <form sec:authorize="isAuthenticated()" th:if="${checkCourse} == false"
+                          th:manifest="${checkForAuthor}"
                           th:object="${course}"
                           th:method="POST">
                         <th:block th:if="${checkForPoints}">
@@ -90,8 +91,10 @@
                 </tr>
                 </tbody>
             </table>
+            <div class="text-center">
             <a sec:authorize="hasRole('TEACHER')" href="/add-course" class="btn btn-lg btn-primary btn-block"
-               type="button">Добави</a>
+               type="button">Добави курс</a>
+            </div>
         </div>
     </th:block>
 </th:block>

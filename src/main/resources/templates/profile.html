@@ -72,7 +72,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr  th:each="course,iter: *{courses}">
+                    <tr  th:each="course,iter: ${user.getCourses()}">
                         <th scope="row" th:text="${iter.index+1}">1</th>
                         <td><a th:href="@{/course/{id}(id=${course.getId()})}" th:text="${course.getTitle()}"></a></td>
                         <td th:text="${course.getPoints()}">Mark</td>

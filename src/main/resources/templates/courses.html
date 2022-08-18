@@ -34,7 +34,7 @@
 <nav th:if="${ coursePage.totalPages > 0 }" class="pagination-outer" aria-label="Page navigation example">
     <ul  class="pagination">
         <li th:each="pageNumber : ${pageNumbers}"
-            class="page-item"><a class="page-link waves-effect"
+            class="page-item"><a class="page-link waves-effect page-item"
                                  th:href="@{/courses(size=${coursePage.size}, page=${pageNumber})}"
                                  th:text="${pageNumber}"
                                  th:class="${pageNumber==coursePage.number + 1} ? active">3</a></li>

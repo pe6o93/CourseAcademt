@@ -14,7 +14,7 @@ public interface CourseService {
 
     void initCourses();
 
-    CourseDTO addCourse(CourseDTO courseDTO, String name);
+    CourseDTO addCourse(CourseDTO courseDTO, String username);
 
     boolean checkIfCourseExist(Integer id);
 

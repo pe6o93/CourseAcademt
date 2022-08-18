@@ -78,7 +78,6 @@ public class UserServiceImpl implements UserService {
                 setAuthentication(authentication);
     }
 
-    @Transactional
     @Override
     public UserDTO findByUsername(String name) {
         UserEntity userEntity = this.userRepository.findUserEntityByUsername(name).orElseThrow();
@@ -174,7 +173,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean checkIfUserIsAuthor(UserDTO authorDto, String username) {
-        return this.userRepository.findUserEntityByUsername(username).orElseThrow().getId() == authorDto.getId();
+        return Objects.equals(this.userRepository.findUserEntityByUsername(username).orElseThrow().getId(), authorDto.getId());
     }
 
     @Transactional
@@ -192,12 +191,12 @@ public class UserServiceImpl implements UserService {
             user.setRoles(List.of(this.rolesRepository.getRoleEntityByRole(RolesEnum.USER)));
 
             UserEntity teacher = new UserEntity();
-            teacher.setFirstName("Desimira");
+            teacher.setFirstName("Maria");
             teacher.setLastName("Petrova");
             teacher.setPassword(passwordEncoder.encode("parola"));
-            teacher.setUsername("desimira");
+            teacher.setUsername("potrebitelka");
             teacher.setAge((byte) 21);
-            teacher.setEmail("desimira@abv.bg");
+            teacher.setEmail("emailAdress@abv.bg");
             teacher.setGender(GenderEnum.FEMALE);
             teacher.setRoles(List.of(
                     this.rolesRepository.getRoleEntityByRole(RolesEnum.USER),
@@ -216,8 +215,6 @@ public class UserServiceImpl implements UserService {
                     this.rolesRepository.getRoleEntityByRole(RolesEnum.USER),
                     this.rolesRepository.getRoleEntityByRole(RolesEnum.TEACHER),
                     this.rolesRepository.getRoleEntityByRole(RolesEnum.ADMIN)));
-
-
 
             this.userRepository.save(user);
             this.userRepository.save(teacher);

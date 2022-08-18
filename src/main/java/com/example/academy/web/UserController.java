@@ -75,11 +75,15 @@ public class UserController {
         return "redirect:/login";
     }
 
+    @Transactional
     @GetMapping("/profile")
     public String profile(Model model, Principal principal) {
-        UserDTO userDTO = this.userService.findByUsername(principal.getName());
-        model.addAttribute("user", this.userService.findByUsername(principal.getName()));
-        model.addAttribute("role", this.userService.getBiggestRole(userDTO));
+        if (principal!=null) {
+            UserDTO userDTO = this.userService.findByUsername(principal.getName());
+            model.addAttribute("user", this.userService.findByUsername(principal.getName()));
+            model.addAttribute("role", this.userService.getBiggestRole(userDTO));
+        }
+
         return "profile";
     }
 

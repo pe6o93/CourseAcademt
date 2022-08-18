@@ -28,8 +28,6 @@ public class ApplicationSecurityConfiguration {
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
 
-
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -39,7 +37,7 @@ public class ApplicationSecurityConfiguration {
 //                    .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 // the next line allows access to the home page, login page and registration for everyone
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .antMatchers("/", "/index", "/register", "/featured","/profile").permitAll()
+                .antMatchers("/", "/index", "/register", "/featured","/profile","/404").permitAll()
                 .antMatchers("/add-course","/edit-course/*").hasRole("TEACHER")
 
                 // next we forbid all other pages for unauthenticated users.
