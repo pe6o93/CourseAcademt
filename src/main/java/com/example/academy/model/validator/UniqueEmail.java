@@ -13,8 +13,6 @@ import java.lang.annotation.Target;
 public @interface UniqueEmail {
 
     String message() default "Този имейл е зает";
-
     Class<?>[] groups() default { };
-
     Class<? extends Payload>[] payload() default { };
 }

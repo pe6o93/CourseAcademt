@@ -1,17 +1,13 @@
 package com.example.academy.web;
 
-import com.example.academy.model.dto.CourseDTO;
 import com.example.academy.model.dto.LoginDTO;
 import com.example.academy.model.dto.RegisterDto;
 import com.example.academy.model.dto.UserDTO;
-import com.example.academy.model.entity.UserEntity;
-import com.example.academy.service.CourseService;
 import com.example.academy.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -43,6 +39,7 @@ public class UserController {
     public String registerConfirm(@Valid RegisterDto registerDto,
                                   BindingResult bindingResult, RedirectAttributes redirectAttributes) throws IOException {
 
+
         if (bindingResult.hasErrors() || !registerDto.getPassword()
                 .equals(registerDto.getConfirmPassword())) {
 
@@ -52,34 +49,14 @@ public class UserController {
             return "redirect:register";
         }
         this.userService.registerAndLoginUser(registerDto);
-
         return "redirect:/";
     }
 
-    @GetMapping("/login")
-    public String login(Model model, Principal principal) {
-        if (!model.containsAttribute("isFound")) {
-            model.addAttribute("isFound", true);
-        }
-        return "login";
-    }
-
-    @PostMapping("/login-error")
-    public String failedLogin(
-            @ModelAttribute(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY)
-            String userName,
-            RedirectAttributes attributes
-    ) {
-
-        attributes.addFlashAttribute("bad_credentials", true);
-        attributes.addFlashAttribute("username", userName);
-        return "redirect:/login";
-    }
 
     @Transactional
     @GetMapping("/profile")
     public String profile(Model model, Principal principal) {
-        if (principal!=null) {
+        if (principal != null) {
             UserDTO userDTO = this.userService.findByUsername(principal.getName());
             model.addAttribute("user", userDTO);
             model.addAttribute("role", this.userService.getBiggestRole(userDTO));

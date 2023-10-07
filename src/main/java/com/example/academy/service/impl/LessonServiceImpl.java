@@ -4,8 +4,10 @@ import com.example.academy.model.dto.LessonDTO;
 import com.example.academy.model.entity.LessonEntity;
 import com.example.academy.repository.LessonRepository;
 import com.example.academy.service.LessonService;
+import com.example.academy.util.DateUtil;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +25,10 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public LessonDTO findById(Integer id) {
 
-        LessonEntity lessonEntity = this.lessonRepository.findById(id).orElse(null);
+        LessonEntity lessonEntity = this.lessonRepository.findById(id).orElseThrow();
         LessonDTO lessonDTO = this.modelMapper.map(lessonEntity, LessonDTO.class);
-        lessonDTO.setCreated(lessonEntity.getCreated().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+        String formatDate = DateUtil.formatDate(lessonEntity.getCreated());
+        lessonDTO.setCreated(formatDate);
         return lessonDTO;
     }
 

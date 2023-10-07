@@ -1,21 +1,22 @@
 package com.example.academy.model.entity;
 
-import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-import org.springframework.cglib.core.Local;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Table(name = "courses")
 public class CourseEntity extends BaseEntity{
 
@@ -41,4 +42,5 @@ public class CourseEntity extends BaseEntity{
     public void create() {
         this.created = LocalDateTime.now();
     }
+
 }

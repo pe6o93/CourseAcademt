@@ -4,12 +4,20 @@ import com.example.academy.model.dto.CourseDTO;
 import com.example.academy.model.dto.LessonDTO;
 import com.example.academy.model.dto.RegisterDto;
 import com.example.academy.model.dto.UserDTO;
-import com.example.academy.model.entity.*;
+import com.example.academy.model.entity.CourseEntity;
+import com.example.academy.model.entity.LessonEntity;
+import com.example.academy.model.entity.PictureEntity;
+import com.example.academy.model.entity.UserEntity;
 import com.example.academy.model.enums.GenderEnum;
 import com.example.academy.model.enums.RolesEnum;
-import com.example.academy.repository.*;
+import com.example.academy.repository.CourseRepository;
+import com.example.academy.repository.LessonRepository;
+import com.example.academy.repository.PictureRepository;
+import com.example.academy.repository.RolesRepository;
+import com.example.academy.repository.UserRepository;
 import com.example.academy.service.PictureService;
 import com.example.academy.service.UserService;
+import com.example.academy.util.DateUtil;
 import com.example.academy.web.exeption.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -21,17 +29,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,6 +59,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isUserNameFree(String username) {
         return this.userRepository.findUserEntityByUsername(username).isEmpty();
+
     }
 
     @Override
@@ -58,16 +67,23 @@ public class UserServiceImpl implements UserService {
         return this.userRepository.findUserEntitiesByEmail(email).isEmpty();
     }
 
+    @Transactional
     @Override
     public void registerAndLoginUser(RegisterDto registerDto) throws IOException {
 
-        PictureEntity pictureEntity = this.pictureService.savePictureFromMultipartFile(registerDto.getPicture());
         UserEntity user = this.modelMapper.map(registerDto, UserEntity.class);
+        if (!registerDto.getPicture().isEmpty()) {
+            user.setPicture(this.pictureService.savePictureFromMultipartFile(registerDto.getPicture()));
+        } else {
+            PictureEntity pictureEntity = new PictureEntity();
+            pictureEntity.setUrl("data:image/png;base64,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");
+            pictureEntity.setTitle("Example");
+            user.setPicture(pictureRepository.findById(1).get());
+        }
         user.setRoles(List.of(this.rolesRepository.getRoleEntityByRole(registerDto.getRole())));
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
-        user.setPicture(pictureEntity);
         this.userRepository.save(user);
-        UserDetails principal = userDetailService.loadUserByUsername(user.getUsername());
+        UserDetails principal = this.userDetailService.loadUserByUsername(user.getUsername());
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 principal,
                 user.getPassword(),
@@ -123,7 +139,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserDTO> findPaginatedTeachers(PageRequest pageable) {
         List<UserEntity> usersList = this.userRepository.findUserEntitiesByRolesContainingTeacher();
-        List<UserDTO> userDTOS = usersList.stream().filter(t -> t.getRoles().stream().noneMatch(r -> r.getRole() == RolesEnum.ADMIN)).map(this::userToUserDTO).toList();
+        List<UserDTO> userDTOS = usersList.stream()
+                .filter(t -> t.getRoles().stream().noneMatch(r -> r.getRole() == RolesEnum.ADMIN))
+                .map(this::userToUserDTO).toList();
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;
@@ -159,7 +177,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addMorePoints(String points, String username) {
-        UserEntity userEntity = this.userRepository.findUserEntityByUsername(username).orElseThrow(() -> new ObjectNotFoundException("Няма обект с такъв Username."));
+        UserEntity userEntity = this.userRepository.findUserEntityByUsername(username)
+                .orElseThrow(() -> new ObjectNotFoundException("Няма обект с такъв Username."));
         userEntity.setPoints(userEntity.getPoints().add(new BigDecimal(points)));
         this.userRepository.save(userEntity);
     }
@@ -170,7 +189,8 @@ public class UserServiceImpl implements UserService {
         return lessons.stream().map(l -> {
             LessonDTO lessonDTO = this.modelMapper.map(l, LessonDTO.class);
             lessonDTO.setCourse(this.modelMapper.map(l.getCourse(), CourseDTO.class));
-            lessonDTO.setCreated(l.getCreated().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+            String formatDate = DateUtil.formatDate(l.getCreated());
+            lessonDTO.setCreated(formatDate);
             return lessonDTO;
         }).collect(Collectors.toList());
     }
@@ -250,14 +270,10 @@ public class UserServiceImpl implements UserService {
         List<CourseEntity> courses = userEntity.getCourses();
         return courses.stream().map(c -> {
                     CourseDTO map = this.modelMapper.map(c, CourseDTO.class);
-                    map.setCreated(localDateTimeString(c.getCreated()));
+                    map.setCreated(DateUtil.formatDate(c.getCreated()));
                     return map;
                 }
         ).toList();
-    }
-
-    public static String localDateTimeString(LocalDateTime c) {
-        return c.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     }
 
     private UserDTO userToUserDTO(UserEntity userEntity) {

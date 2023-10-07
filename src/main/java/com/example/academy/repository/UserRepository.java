@@ -16,9 +16,12 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     Optional<UserEntity> findUserEntityByUsername(String username);
     Optional<UserEntity> findUserEntitiesByEmail(String email);
 
+    UserEntity findByUsername(String username);
+
 @Query("SELECT u FROM UserEntity u JOIN u.roles r WHERE  r.role='TEACHER'")
     List<UserEntity> findLast3Teachers(Pageable pageable);
 
 @Query("SELECT u FROM UserEntity u JOIN u.roles r WHERE  r.role='TEACHER'")
 List<UserEntity> findUserEntitiesByRolesContainingTeacher();
+
 }

@@ -1,8 +1,10 @@
 package com.example.academy.model.entity;
 
 import com.example.academy.model.enums.RolesEnum;
-import lombok.*;
-import org.hibernate.annotations.Fetch;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;

@@ -25,7 +25,7 @@ public class UserEntity extends BaseEntity {
     private String firstName;
     @Size(max = 30)
     private String lastName;
-    @Column(name = "username",length = 30,unique = true,nullable = false)
+    @Column(name = "username", length = 30, unique = true, nullable = false)
     private String username;
 
     private String password;
@@ -33,7 +33,7 @@ public class UserEntity extends BaseEntity {
     private String email;
     private Byte age;
 
-    private BigDecimal points=BigDecimal.ZERO;
+    private BigDecimal points = BigDecimal.ZERO;
 
     @Enumerated(EnumType.ORDINAL)
     private GenderEnum gender;
@@ -42,11 +42,11 @@ public class UserEntity extends BaseEntity {
     private PictureEntity picture;
 
 
-  // @LazyCollection(LazyCollectionOption.FALSE)
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-   private List<CourseEntity> courses=new ArrayList<>();
+    // @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CourseEntity> courses = new ArrayList<>();
 
-  // @LazyCollection(LazyCollectionOption.FALSE)
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    // @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<RoleEntity> roles;
 }

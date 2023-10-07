@@ -36,6 +36,5 @@ public class SecurityService {
         UserDTO user = this.userService.findUserByCourseId(courseId);
         this.authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName().equals(user.getUsername());
-
     }
 }

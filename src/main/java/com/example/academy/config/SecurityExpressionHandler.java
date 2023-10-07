@@ -17,7 +17,8 @@ public class SecurityExpressionHandler extends DefaultMethodSecurityExpressionHa
     private AuthenticationTrustResolver trustResolver = new AuthenticationTrustResolverImpl();
 
     @Override
-    protected MethodSecurityExpressionOperations createSecurityExpressionRoot(Authentication authentication, MethodInvocation invocation) {
+    protected MethodSecurityExpressionOperations createSecurityExpressionRoot(Authentication authentication,
+                                                                              MethodInvocation invocation) {
 
         OwnerSecurityExpressionRoot root = new OwnerSecurityExpressionRoot(authentication);
         root.setTrustResolver(this.trustResolver);

@@ -28,8 +28,7 @@ public class CourseAcademySecurityConfiguration extends GlobalMethodSecurityConf
      in this case uncomment block N°1, N°2and N°3
      */
 
-    @Autowired
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
 
     @Override
     protected MethodSecurityExpressionHandler createExpressionHandler() {

@@ -21,8 +21,8 @@ public class GlobalController extends ResponseEntityExceptionHandler {
 
     @Transactional
     @ModelAttribute("myCourses")
-    public List<CourseDTO> myCourses(Principal user){
-        if(user!=null) {
+    public List<CourseDTO> myCourses(Principal user) {
+        if (user != null) {
             return this.userService.findByUsername(user.getName()).getCourses();
         }
         return null;
@@ -30,9 +30,9 @@ public class GlobalController extends ResponseEntityExceptionHandler {
 
     @Transactional
     @ModelAttribute("haveAny")
-    public Boolean haveCourse(Principal user){
-        if(user!=null) {
-            return !this.userService.findByUsername(user.getName()).getCourses().isEmpty() ;
+    public Boolean haveCourse(Principal user) {
+        if (user != null) {
+            return !this.userService.findByUsername(user.getName()).getCourses().isEmpty();
         }
         return false;
     }

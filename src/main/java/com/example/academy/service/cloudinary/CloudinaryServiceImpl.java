@@ -19,9 +19,11 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     private final Cloudinary cloudinary;
 
 
-
     @Override
     public CloudinaryImage upload(MultipartFile multipartFile) throws IOException {
+        if (multipartFile.isEmpty()) {
+            return null;
+        }
 
         File tempFile = File.createTempFile(TEMP_FILE, multipartFile.getOriginalFilename());
         multipartFile.transferTo(tempFile);
@@ -34,7 +36,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
             String url = uploadResult.getOrDefault(URL,
                     "https://i.pinimg.com/originals/c5/21/64/c52164749f7460c1ededf8992cd9a6ec.jpg");
             String publicId = uploadResult.getOrDefault(PUBLIC_ID, "");
-            CloudinaryImage image=new CloudinaryImage();
+            CloudinaryImage image = new CloudinaryImage();
             image.setUrl(url);
             image.setPublicId(publicId);
             return image;

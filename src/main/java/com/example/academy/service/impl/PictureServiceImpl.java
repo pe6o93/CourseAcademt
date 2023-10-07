@@ -23,7 +23,7 @@ public class PictureServiceImpl implements PictureService {
     @Override
     public PictureEntity savePictureFromMultipartFile(MultipartFile img) throws IOException {
         final CloudinaryImage uploaded = cloudinaryService.upload(img);
-        PictureEntity picture=new PictureEntity();
+        PictureEntity picture = new PictureEntity();
         picture.setUrl(uploaded.getUrl());
         picture.setPublicId(uploaded.getPublicId());
         return this.pictureRepository.save(picture);
@@ -32,12 +32,12 @@ public class PictureServiceImpl implements PictureService {
     @Override
     public void initPictures() {
         String URL = "https://res.cloudinary.com/dcw3srdlg/image/upload/v1660846730/auwjil2itvsrrjkpg3vo.jpg";
-        PictureEntity pictureEntity1=new PictureEntity();
-        PictureEntity pictureEntity2=new PictureEntity();
-        PictureEntity pictureEntity3=new PictureEntity();
+        PictureEntity pictureEntity1 = new PictureEntity();
+        PictureEntity pictureEntity2 = new PictureEntity();
+        PictureEntity pictureEntity3 = new PictureEntity();
         pictureEntity1.setUrl(URL);
         pictureEntity2.setUrl(URL);
         pictureEntity3.setUrl(URL);
-        this.pictureRepository.saveAll(List.of(pictureEntity1,pictureEntity2,pictureEntity3));
+        this.pictureRepository.saveAll(List.of(pictureEntity1, pictureEntity2, pictureEntity3));
     }
 }

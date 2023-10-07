@@ -1,12 +1,13 @@
 package com.example.academy.model.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Data
+@Getter @Setter
 @Table(name = "pictures")
 public class PictureEntity extends BaseEntity{
 

@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -40,11 +41,12 @@ public class CourseController {
     @Transactional
     @PostMapping("/add-course")
     public String addCourse(@Valid AddCourseDTO courseDTO,
-                          BindingResult bindingResult,
-                          RedirectAttributes redirectAttributes, Principal user) throws IOException {
+                            BindingResult bindingResult,
+                            RedirectAttributes redirectAttributes, Principal user) throws IOException {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("courseDTO", courseDTO);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseDTO", bindingResult);
+            redirectAttributes.addFlashAttribute(
+                    "org.springframework.validation.BindingResult.courseDTO", bindingResult);
             return "redirect:add-course";
         }
         CourseDTO course = this.courseService.addCourse(courseDTO, user.getName());
@@ -52,8 +54,9 @@ public class CourseController {
     }
 
     @GetMapping("/courses")
-    public String getCourses(Model model, @RequestParam("page") Optional<Integer> page,
-                              @RequestParam("size") Optional<Integer> size) {
+    public String getCourses(Model model,
+                             @RequestParam("page") Optional<Integer> page,
+                             @RequestParam("size") Optional<Integer> size) {
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(6);
         Page<CourseDTO> coursePage = this.courseService.findPaginated(PageRequest.of(currentPage - 1, pageSize));
@@ -67,6 +70,7 @@ public class CourseController {
         }
         return "courses";
     }
+
     @Transactional
     @GetMapping("/course/{id}")
     public String course(@PathVariable Integer id, Model model, Principal user) {
@@ -76,12 +80,12 @@ public class CourseController {
         UserDTO author = this.userService.findUserByCourseId(id);
         model.addAttribute("course", this.courseService.findById(id));
         model.addAttribute("author", author);
-        model.addAttribute("lessons",this.userService.findLessonsByCourse(id));
+        model.addAttribute("lessons", this.userService.findLessonsByCourse(id));
 
         if (user != null) {
             this.userService.checkIfUserHaveThisCourse(id, user.getName());
             model.addAttribute("checkCourse", this.userService.checkIfUserHaveThisCourse(id, user.getName()));
-            model.addAttribute("checkForAuthor",this.userService.checkIfUserIsAuthor(author,user.getName()));
+            model.addAttribute("checkForAuthor", this.userService.checkIfUserIsAuthor(author, user.getName()));
             if (this.userService.findByUsername(user.getName()).getPoints().compareTo(this.courseService.findById(id).getPoints()) > 0) {
                 model.addAttribute("checkForPoints", true);
             }
@@ -94,16 +98,16 @@ public class CourseController {
     public String buyCourse(@PathVariable Integer id, Principal user) {
         UserDTO userDTO = this.userService.findByUsername(user.getName());
         CourseDTO courseDTO = this.courseService.findById(id);
-        if (userDTO.getPoints().compareTo(courseDTO.getPoints())>0) {
-            this.userService.addUserAddCourse(userDTO.getId(),courseDTO.getId());
+        if (userDTO.getPoints().compareTo(courseDTO.getPoints()) > 0) {
+            this.userService.addUserAddCourse(userDTO.getId(), courseDTO.getId());
         }
-        return "redirect:/course/"+courseDTO.getId();
+        return "redirect:/course/" + courseDTO.getId();
     }
 
     @PreAuthorize("@securityService.hasCourse(#id)")
     @GetMapping("/edit-course/{id}")
-    public String getEditCourse(@PathVariable Integer id, Model model){
-        CourseDTO course=this.courseService.findById(id);
+    public String getEditCourse(@PathVariable Integer id, Model model) {
+        CourseDTO course = this.courseService.findById(id);
         model.addAttribute("course", course);
         return "edit-course";
     }
@@ -111,7 +115,7 @@ public class CourseController {
     @PreAuthorize("@securityService.hasCourse(#id)")
     @PatchMapping("/edit-course/{id}")
     public String editCourse(@PathVariable Integer id, @Valid CourseDTO course, BindingResult bindingResult,
-                             RedirectAttributes redirectAttributes){
+                             RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("courseDTO", course);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseDTO", bindingResult);
@@ -119,12 +123,13 @@ public class CourseController {
         }
         this.courseService.update(course);
 
-        return "redirect:/course/"+id;
+        return "redirect:/course/" + id;
     }
+
     @Transactional
     @PreAuthorize("@securityService.hasCourse(#id)")
     @DeleteMapping("/course/{id}")
-    public String deleteCourse(@PathVariable Integer id){
+    public String deleteCourse(@PathVariable Integer id) {
         this.courseService.deleteCourse(id);
         return "redirect:/profile";
     }

@@ -60,7 +60,8 @@ public class LessonController {
     }
 
     @PatchMapping("/edit-lesson/{id}")
-    public String editLesson(@PathVariable Integer id, @Valid LessonDTO lessonDTO, RedirectAttributes redirectAttributes, BindingResult bindingResult) {
+    public String editLesson(@PathVariable Integer id, @Valid LessonDTO lessonDTO,
+                             RedirectAttributes redirectAttributes, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("lessonDTO", lessonDTO);
