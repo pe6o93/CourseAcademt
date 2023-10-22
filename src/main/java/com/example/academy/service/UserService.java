@@ -6,9 +6,9 @@ import com.example.academy.model.dto.UserDTO;
 import com.example.academy.model.entity.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -22,6 +22,7 @@ public interface UserService {
     UserDTO findByUsername(String name);
     UserEntity findEntityByUsername(String name);
 
+    BigDecimal getPointsByUsername(String username);
 
     String getBiggestRole(UserDTO userDTO);
 
@@ -46,4 +47,7 @@ public interface UserService {
     Boolean checkIfUserIsAuthor(UserDTO authorDto, String username);
 
     void initUsers();
+
+    String findUsernameByCourseId(Integer id);
+
 }

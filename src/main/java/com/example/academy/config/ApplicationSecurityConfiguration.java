@@ -1,25 +1,18 @@
 package com.example.academy.config;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
-
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.BeanIds;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import static org.springframework.security.config.Customizer.withDefaults;
+import static com.example.academy.model.enums.RolesEnum.ADMIN;
+import static com.example.academy.model.enums.RolesEnum.TEACHER;
 
 
 @Configuration
@@ -37,9 +30,9 @@ public class ApplicationSecurityConfiguration {
                 .csrf().disable().cors().disable()
                 .authorizeRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .antMatchers("/", "/index", "/register", "/featured", "/profile", "/404").permitAll()
-                .antMatchers("/add-course", "/edit-course/*").hasRole("TEACHER")
-                .antMatchers("/statistics").hasRole("ADMIN")
+                .antMatchers("/", "/index", "/register", "/featured", "/profile", "/404","*/edit").permitAll()
+                .antMatchers("/add-course", "/edit-course/*").hasRole(TEACHER.name())
+                .antMatchers("/statistics").hasRole(ADMIN.name())
                 .and()
                 .formLogin()
                 .loginPage("/login")

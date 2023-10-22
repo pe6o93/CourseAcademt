@@ -11,8 +11,9 @@ import java.time.LocalDateTime;
 @Data
 public class CourseDTO {
 
+    public final static String ENTITY_NAME = "courseDTO";
     private Integer id;
-    @Size(min=5,message = "Заглавието трябва да бъде повече от 5 символа.")
+    @Size(min = 5, message = "Заглавието трябва да бъде повече от 5 символа.")
     private String title;
     private String imageURL;
     private String description;

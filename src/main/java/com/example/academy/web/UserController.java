@@ -65,7 +65,7 @@ public class UserController {
         return "profile";
     }
 
-    @GetMapping("/profile/{id}/edit")
+    @GetMapping("/user/profile/{id}/edit")
     public String editOffer(@PathVariable Integer id, Model model) {
         UserDTO byIdAndMapToDTO = this.userService.findByIdAndMapToDTO(id);
         model.addAttribute("user", byIdAndMapToDTO);
@@ -79,6 +79,7 @@ public class UserController {
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes,
             Model model) throws ObjectNotFoundException {
+
         UserDTO byIdAndMapToDTO = this.userService.findByIdAndMapToDTO(id);
         model.addAttribute("user", byIdAndMapToDTO);
 

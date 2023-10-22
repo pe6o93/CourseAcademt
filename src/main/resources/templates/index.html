@@ -79,22 +79,23 @@
                     <p class="mb-4 pb-2">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet
                         diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo justo erat amet</p>
                     <form th:action="@{/sendMail}"
-                    th:method="post">
+                          th:method="post"
+                          th:object="${emailDetails}">
                         <div class="row g-3">
                             <div class="col-12 col-sm-6">
-                                <input name="name" type="text" class="form-control border-0" placeholder="Your Name"
+                                <input th:field="*{name}" th:errorclass="bg-danger"  name="name" type="text" class="form-control border-0" placeholder="Your Name"
                                        style="height: 55px;">
                             </div>
                             <div class="col-12 col-sm-6">
-                                <input  type="email" class="form-control border-0" placeholder="Your Email"
+                                <input th:field="*{recipient}" th:errorclass="bg-danger"  type="email" class="form-control border-0" placeholder="Your Email"
                                        style="height: 55px;">
                             </div>
                             <div class="col-12 col-sm-6">
-                                <input type="text" class="form-control border-0" placeholder="Your Mobile"
+                                <input th:field="*{phone}" th:errorclass="bg-danger"  type="text" class="form-control border-0" placeholder="Your Mobile"
                                        style="height: 55px;">
                             </div>
                             <div class="col-12">
-                                <textarea class="form-control border-0" placeholder="Special Note"></textarea>
+                                <textarea  th:field="*{msgBody}" th:errorclass="bg-danger" class="form-control border-0" placeholder="Special Note"></textarea>
                             </div>
                             <div class="col-12">
                                 <button class="btn btn-primary rounded-pill py-3 px-5" type="submit">Изпрати</button>

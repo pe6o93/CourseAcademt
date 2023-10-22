@@ -35,8 +35,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -96,13 +94,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO findByUsername(String name) {
-        UserEntity userEntity = this.userRepository.findUserEntityByUsername(name).orElseThrow();
+        UserEntity userEntity = this.userRepository.findUserEntityByUsername(name)
+                .orElseThrow();
         return userToUserDTO(userEntity);
     }
 
     @Override
     public UserEntity findEntityByUsername(String name) {
         return this.userRepository.findUserEntityByUsername(name).orElseThrow();
+    }
+
+    @Override
+    public BigDecimal getPointsByUsername(String username) {
+        return this.userRepository.getUserPointsByUsername(username);
     }
 
     @Override
@@ -163,15 +167,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUserAddCourse(Integer userId, Integer courseId) {
-        //TODO
         UserEntity user = this.userRepository.findById(userId).orElseThrow();
         CourseEntity course = this.courseRepository.findById(courseId).orElseThrow();
         user.setPoints(user.getPoints().subtract(course.getPoints()));
-        if (user.getCourses().isEmpty()) {
-            user.setCourses(List.of(course));
-        } else {
-            user.getCourses().add(course);
-        }
+        user.getCourses().add(course);
         this.userRepository.save(user);
     }
 
@@ -197,7 +196,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean checkIfUserIsAuthor(UserDTO authorDto, String username) {
-        return Objects.equals(this.userRepository.findUserEntityByUsername(username).orElseThrow().getId(), authorDto.getId());
+        Integer userId = this.userRepository.findUserEntityByUsername(username)
+                .orElseThrow().getId();
+        return Objects.equals(userId, authorDto.getId());
     }
 
     @Transactional
@@ -250,6 +251,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String findUsernameByCourseId(Integer id) {
+        return this.findUserByCourseId(id).getUsername();
+    }
+
+    @Override
     public String getBiggestRole(UserDTO userDTO) {
         String s = userDTO.getRoles().get(userDTO.getRoles().size() - 1).getRole().toString();
         if (s.equals("USER")) {
@@ -262,8 +268,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO findByIdAndMapToDTO(Integer id) {
-        UserEntity userEntity = this.userRepository.findById(id).orElseThrow();
+        UserEntity userEntity = this.userRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Няма обект с id: " + id));
         return userToUserDTO(userEntity);
+    }
+
+
+    private UserDTO userToUserDTO(UserEntity userEntity) {
+        UserDTO userDTO = this.modelMapper.map(userEntity, UserDTO.class);
+        userDTO.setCourses(mapCoursesToDTO(userEntity));
+        userDTO.setImageURL(userEntity.getPicture().getUrl());
+        return userDTO;
     }
 
     private List<CourseDTO> mapCoursesToDTO(UserEntity userEntity) {
@@ -274,12 +289,5 @@ public class UserServiceImpl implements UserService {
                     return map;
                 }
         ).toList();
-    }
-
-    private UserDTO userToUserDTO(UserEntity userEntity) {
-        UserDTO userDTO = this.modelMapper.map(userEntity, UserDTO.class);
-        userDTO.setCourses(mapCoursesToDTO(userEntity));
-        userDTO.setImageURL(userEntity.getPicture().getUrl());
-        return userDTO;
     }
 }

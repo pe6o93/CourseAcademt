@@ -8,13 +8,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.List;
 
 public interface CourseService {
 
     List<CourseDTO> mapCoursesToDTO(List<CourseEntity> courses);
-
-    void initCourses();
 
     CourseDTO addCourse(AddCourseDTO addCourseDTO, String username) throws IOException;
 
@@ -32,5 +32,9 @@ public interface CourseService {
 
     void addLessonToCourse(LessonDTO lessonDTO, Integer courseId);
 
-//    CourseDTO findByLessonId(Integer id);
+    BigDecimal getCoursePointById(Integer id);
+
+    void addCourseToUser(Integer courseId, String username);
+
+    List<CourseDTO> getCourseByUsername(String name);
 }

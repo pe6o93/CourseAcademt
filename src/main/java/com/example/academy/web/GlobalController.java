@@ -18,12 +18,13 @@ import java.util.List;
 public class GlobalController extends ResponseEntityExceptionHandler {
 
     private final UserService userService;
+    private final CourseService courseService;
 
     @Transactional
     @ModelAttribute("myCourses")
     public List<CourseDTO> myCourses(Principal user) {
         if (user != null) {
-            return this.userService.findByUsername(user.getName()).getCourses();
+           return this.courseService.getCourseByUsername(user.getName());
         }
         return null;
     }

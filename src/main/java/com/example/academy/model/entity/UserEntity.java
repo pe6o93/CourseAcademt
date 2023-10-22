@@ -42,8 +42,8 @@ public class UserEntity extends BaseEntity {
     private PictureEntity picture;
 
 
-    // @LazyCollection(LazyCollectionOption.FALSE)
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<CourseEntity> courses = new ArrayList<>();
 
     // @LazyCollection(LazyCollectionOption.FALSE)

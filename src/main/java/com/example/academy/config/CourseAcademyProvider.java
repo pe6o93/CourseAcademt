@@ -1,13 +1,9 @@
 package com.example.academy.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.example.academy.model.entity.RoleEntity;
 import com.example.academy.model.entity.UserEntity;
 import com.example.academy.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,6 +12,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Component
@@ -31,14 +30,14 @@ public class CourseAcademyProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) {
         String username = authentication.getName();
         String pwd = authentication.getCredentials().toString();
-       UserEntity user = this.userRepository.findByUsername(username);
-        if (!(user ==null)) {
+        UserEntity user = this.userRepository.findByUsername(username);
+        if (!(user == null)) {
             if (this.passwordEncoder.matches(pwd, user.getPassword())) {
-                return new UsernamePasswordAuthenticationToken(username, pwd, getGrantedAuthorities( user.getRoles()));
+                return new UsernamePasswordAuthenticationToken(username, pwd, getGrantedAuthorities(user.getRoles()));
             } else {
                 throw new BadCredentialsException("Invalid password!");
             }
-        }else {
+        } else {
             throw new BadCredentialsException("No user registered with this details!");
         }
     }

@@ -2,6 +2,7 @@ package com.example.academy.web;
 
 
 import com.example.academy.model.dto.CourseDTO;
+import com.example.academy.model.entity.EmailDetails;
 import com.example.academy.service.CourseService;
 import com.example.academy.service.UserService;
 import lombok.AllArgsConstructor;
@@ -22,9 +23,11 @@ public class HomeController {
 
     @Transactional
     @GetMapping("/")
-    public String home(Model model){
-       model.addAttribute("lastCourses",this.courseService.getLastCoursesToDTO());
-       model.addAttribute("lastTeachers",this.userService.getLastTeachersToDTO());
-       return "index";
+    public String home(Model model) {
+        model.addAttribute("lastCourses", this.courseService.getLastCoursesToDTO());
+        model.addAttribute("lastTeachers", this.userService.getLastTeachersToDTO());
+        model.addAttribute(EmailDetails.ENTITY_NAME, new EmailDetails());
+        return "index";
     }
+
 }

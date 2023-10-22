@@ -1,26 +1,25 @@
 package com.example.academy.service;
 
 import com.example.academy.model.dto.LessonDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.example.academy.model.dto.UserDTO;
-import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.security.Principal;
+import org.springframework.stereotype.Service;
 
 
 @Service("securityService")
 public class SecurityService {
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    LessonService lessonService;
+    private final LessonService lessonService;
 
-    Authentication authentication;
+    private Authentication authentication;
+
+    public SecurityService(UserService userService, LessonService lessonService) {
+        this.userService = userService;
+        this.lessonService = lessonService;
+    }
 
     public boolean hasCourse(Integer id) {
 
@@ -33,8 +32,8 @@ public class SecurityService {
 
         LessonDTO lessonDTO = this.lessonService.findById(lessonId);
         Integer courseId = lessonDTO.getCourse().getId();
-        UserDTO user = this.userService.findUserByCourseId(courseId);
         this.authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getName().equals(user.getUsername());
+        String username = authentication.getName();
+        return this.userService.checkIfUserHaveThisCourse(courseId, username);
     }
 }

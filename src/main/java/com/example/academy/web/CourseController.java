@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +30,7 @@ import java.util.stream.IntStream;
 @AllArgsConstructor
 public class CourseController {
 
+    private static final String COURSE_DTO_BINDING = "org.springframework.validation.BindingResult.courseDTO";
     private final CourseService courseService;
     private final UserService userService;
 
@@ -44,9 +46,8 @@ public class CourseController {
                             BindingResult bindingResult,
                             RedirectAttributes redirectAttributes, Principal user) throws IOException {
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("courseDTO", courseDTO);
-            redirectAttributes.addFlashAttribute(
-                    "org.springframework.validation.BindingResult.courseDTO", bindingResult);
+            redirectAttributes.addFlashAttribute(CourseDTO.ENTITY_NAME, courseDTO);
+            redirectAttributes.addFlashAttribute(COURSE_DTO_BINDING, bindingResult);
             return "redirect:add-course";
         }
         CourseDTO course = this.courseService.addCourse(courseDTO, user.getName());
@@ -72,21 +73,28 @@ public class CourseController {
     }
 
     @Transactional
-    @GetMapping("/course/{id}")
-    public String course(@PathVariable Integer id, Model model, Principal user) {
-        if (!this.courseService.checkIfCourseExist(id)) {
+    @GetMapping("/course/{courseId}")
+    public String course(@PathVariable Integer courseId, Model model, Principal user) {
+        if (!this.courseService.checkIfCourseExist(courseId)) {
             throw new ObjectNotFoundException("Курсът не е намерен.");
         }
-        UserDTO author = this.userService.findUserByCourseId(id);
-        model.addAttribute("course", this.courseService.findById(id));
+        UserDTO author = this.userService.findUserByCourseId(courseId);
+        model.addAttribute("course", this.courseService.findById(courseId));
         model.addAttribute("author", author);
-        model.addAttribute("lessons", this.userService.findLessonsByCourse(id));
+        model.addAttribute("lessons", this.userService.findLessonsByCourse(courseId));
 
         if (user != null) {
-            this.userService.checkIfUserHaveThisCourse(id, user.getName());
-            model.addAttribute("checkCourse", this.userService.checkIfUserHaveThisCourse(id, user.getName()));
-            model.addAttribute("checkForAuthor", this.userService.checkIfUserIsAuthor(author, user.getName()));
-            if (this.userService.findByUsername(user.getName()).getPoints().compareTo(this.courseService.findById(id).getPoints()) > 0) {
+            final String userName = user.getName();
+            Boolean checkIfUserHaveThisCourse =
+                    this.userService.checkIfUserHaveThisCourse(courseId, userName);
+            Boolean checkIfUserIsAuthor =
+                    this.userService.checkIfUserIsAuthor(author, userName);
+            model.addAttribute("checkCourse", checkIfUserHaveThisCourse);
+            model.addAttribute("checkForAuthor", checkIfUserIsAuthor);
+
+            BigDecimal userPoints = this.userService.getPointsByUsername(userName);
+            BigDecimal courseCoast = this.courseService.getCoursePointById(courseId);
+            if (userPoints.compareTo(courseCoast) > 0) {
                 model.addAttribute("checkForPoints", true);
             }
         }
@@ -96,12 +104,8 @@ public class CourseController {
     @Transactional
     @PostMapping("/course/{id}")
     public String buyCourse(@PathVariable Integer id, Principal user) {
-        UserDTO userDTO = this.userService.findByUsername(user.getName());
-        CourseDTO courseDTO = this.courseService.findById(id);
-        if (userDTO.getPoints().compareTo(courseDTO.getPoints()) > 0) {
-            this.userService.addUserAddCourse(userDTO.getId(), courseDTO.getId());
-        }
-        return "redirect:/course/" + courseDTO.getId();
+        this.courseService.addCourseToUser(id, user.getName());
+        return "redirect:/course/" + id;
     }
 
     @PreAuthorize("@securityService.hasCourse(#id)")
@@ -117,8 +121,8 @@ public class CourseController {
     public String editCourse(@PathVariable Integer id, @Valid CourseDTO course, BindingResult bindingResult,
                              RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("courseDTO", course);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseDTO", bindingResult);
+            redirectAttributes.addFlashAttribute(CourseDTO.ENTITY_NAME, course);
+            redirectAttributes.addFlashAttribute(COURSE_DTO_BINDING, bindingResult);
             return "redirect:/edit-course/" + id;
         }
         this.courseService.update(course);

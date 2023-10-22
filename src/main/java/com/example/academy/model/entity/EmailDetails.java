@@ -8,8 +8,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmailDetails {
+    public static String ENTITY_NAME = "emailDetails";
     private String recipient;
     private String msgBody;
-    private String subject;
+    private String name;
+    private String phone;
     private String attachment;
 }
